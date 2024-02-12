@@ -1,0 +1,4435 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API Title",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.server.test/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "services",
+      "description": "Сервисы REST API zVirt обрабатывают различные запросы и возвращают ответ.\n\n\nREST API использует следующие HTTP-методы и соответствующие им методы\nсервисов:\n\n  * GET - запрос на получение сведений\n    * **Get** - Получение детальной информации о конкретной сущности\n    * **List** - Получение списка сущностей определённого типа\n  * POST - запрос на создание\n    * **Add** - запрос на создание сущности определённого типа\n  * PUT - запрос на обновление\n    * **Update** - запрос на изменение параметров определённой сущности\n  * DELETE - запрос на удаление\n    * **Remove** - запрос на удаление определённой сущности\n"
+    }
+  ],
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "security": [
+    {}
+  ],
+  "paths": {
+    "/events": {
+      "get": {
+        "operationId": "getEvents",
+        "summary": "Получение событий",
+        "tags": [
+          "services"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/affinitylabels": {
+      "description": "Сервис, управляющий доступными в системе метками сходства.",
+      "post": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Создание новой метки сходства",
+        "description": "Создает новую метку. Метка автоматически прикрепляется ко всем\nсущностям, упомянутым в списках vms или hosts.\n",
+        "operationId": "addAffinityLabel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/AffinityLabel"
+              },
+              "example": {
+                "name": "AF-L-001",
+                "description": "New AF-label",
+                "hosts": [
+                  {
+                    "id": 123
+                  },
+                  {
+                    "id": 234
+                  }
+                ],
+                "vms": [
+                  {
+                    "id": 345
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffinityLabel"
+                },
+                "example": {
+                  "id": 123,
+                  "name": "AF-L-001",
+                  "description": "New AF-label",
+                  "has_implicit_affinity_group": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Отображение всех меток",
+        "description": "Отображение всех меток, присутствующих в системе.",
+        "operationId": "listAffinityLabel",
+        "parameters": [
+          {
+            "name": "follow",
+            "in": "query",
+            "description": "Указывает, по каким внутренним ссылкам следует переходить.",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max",
+            "in": "query",
+            "description": "Устанавливает максимальное количество возвращаемых меток. Если не\nуказано, возвращаются все метки.\n",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "xml": {
+                    "name": "affinity_labels"
+                  },
+                  "title": "AffinityLabels",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AffinityLabel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/affinitylabels/{id}": {
+      "description": "Сервис, обслуживающий  конкретную метку сходства",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "style": "simple",
+          "description": "Уникальный идентификатор метки",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Отображение сведений о метке",
+        "description": "Получает подробную информацию о метке.",
+        "operationId": "getAffinityLabel",
+        "parameters": [
+          {
+            "name": "follow",
+            "in": "query",
+            "description": "Указывает, по каким внутренним ссылкам следует переходить.",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffinityLabel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Обновление метки",
+        "description": "Этот вызов обновляет все метаданные, такие как название или описание.",
+        "operationId": "updateAffinityLabel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/AffinityLabel"
+              },
+              "example": {
+                "name": "NewNameAL"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffinityLabel"
+                },
+                "example": {
+                  "id": 123,
+                  "name": "NewNameAL",
+                  "description": "New AF-label",
+                  "has_implicit_affinity_group": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Удаление метки",
+        "description": "Удаляет метку из системы и очищает все назначения удаленной метки.",
+        "operationId": "removeAffinityLabel",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/statusCode/properties/complete"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/affinitylabels/{id}/hosts": {
+      "description": "Сервис предоставляет список хостов, имеющих определенную метку при доступе через подколлекцию affinitylabels/hosts.",
+      "parameters": [
+        {
+          "name": "id",
+          "required": true,
+          "description": "Уникальный идентификатор метки",
+          "in": "path",
+          "schema": {
+            "type": "string"
+          },
+          "style": "simple"
+        }
+      ],
+      "post": {
+        "description": "Добавление метки к хосту.",
+        "summary": "Добавление метки к хосту",
+        "tags": [
+          "services"
+        ],
+        "operationId": "addAffinityLabelHost",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Host"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/hosts/{id}": {
+      "get": {
+        "operationId": "getHost",
+        "summary": "Получение инфы",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "tags": [
+          "services"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Host"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessProtocol": {
+        "type": "string",
+        "description": "Представляет протоколы доступа, поддерживаемые томами Gluster. Gluster и\nnfs включены по умолчанию.\n",
+        "example": "cifs",
+        "enum": [
+          "cifs",
+          "gluster",
+          "nfs"
+        ],
+        "xml": {
+          "name": "access_protocol"
+        }
+      },
+      "Action": {
+        "type": "object",
+        "properties": {
+          "activate": {
+            "type": "boolean",
+            "example": true
+          },
+          "allow_partial_import": {
+            "type": "boolean",
+            "example": true
+          },
+          "async": {
+            "type": "boolean",
+            "example": false
+          },
+          "disk_attachment": {
+            "$ref": "#/components/schemas/DiskAttachment"
+          },
+          "authorized_key": {
+            "$ref": "#/components/schemas/AuthorizedKey"
+          },
+          "auto_pinning_policy": {
+            "$ref": "#/components/schemas/AutoPinningPolicy"
+          },
+          "brics": {
+            "$ref": "#/components/schemas/GlusterBrick"
+          },
+          "certificates": {
+            "$ref": "#/components/schemas/Certificate"
+          },
+          "check_connectivity": {
+            "type": "boolean",
+            "example": true
+          },
+          "clone": {
+            "type": "boolean",
+            "example": false
+          },
+          "clone_permissions": {
+            "type": "boolean",
+            "example": true
+          },
+          "cluster": {
+            "$ref": "#/components/schemas/Cluster"
+          },
+          "collapse_snapshots": {
+            "type": "boolean",
+            "example": false
+          },
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте.",
+            "example": "This is comment"
+          },
+          "commit_on_success": {
+            "type": "boolean",
+            "example": true
+          },
+          "storage_connection": {
+            "$ref": "#/components/schemas/StorageConnection"
+          },
+          "connectivity_timeout": {
+            "type": "integer",
+            "format": "int32",
+            "example": 60
+          },
+          "data_center": {
+            "$ref": "#/components/schemas/DataCenter"
+          },
+          "deploy_hosted_engine": {
+            "type": "boolean",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста.",
+            "example": "This is description"
+          },
+          "gluster_volume_profile_details": {
+            "$ref": "#/components/schemas/GlusterVolumeProfileDetails"
+          },
+          "directory": {
+            "type": "string"
+          },
+          "discard_snapshots": {
+            "type": "boolean",
+            "example": false
+          },
+          "discovered_targets": {
+            "$ref": "#/components/schemas/IscsiDetails"
+          }
+        },
+        "xml": {
+          "name": "action"
+        }
+      },
+      "AffinityGroup": {
+        "type": "object",
+        "xml": {
+          "name": "affinity_group"
+        },
+        "description": "Группа сходства представляет собой группу виртуальных машин с\nопределенной взаимосвязью.\n",
+        "properties": {
+          "broken": {
+            "type": "boolean",
+            "description": "Указывает, нарушена ли группа сходства. Аффинити-группа считается\nнарушенной, если какое-либо из ее правил не выполняется. Broken —\nэто вычисляемое поле в движке. По этой причине это поле можно\nиспользовать только в запросах GET.\n",
+            "example": false
+          },
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "hosts_rule": {
+            "description": "Указывает правило сходства, применяемое между виртуальными машинами\nи хостами, которые являются членами этой группы сходства\n",
+            "$ref": "#/components/schemas/AffinityRule"
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 543
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "AG-001"
+          },
+          "priority": {
+            "type": "number",
+            "format": "float",
+            "description": "Приоритет группы сходства"
+          },
+          "vms_rule": {
+            "description": "Указывает правило сходства, применяемое к виртуальным машинам,\nкоторые являются членами этой группы сходства.\n",
+            "$ref": "#/components/schemas/AffinityRule"
+          }
+        }
+      },
+      "AffinityLabel": {
+        "type": "object",
+        "xml": {
+          "name": "affinity_label"
+        },
+        "description": "Метка сходства может влиять на планирование виртуальных машин. Чаще\nвсего используется для создания подкластера из доступных хостов.\n",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте.",
+            "example": "some comment"
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста.",
+            "example": "New affinity label"
+          },
+          "has_implicit_affinity_group": {
+            "type": "boolean",
+            "description": "Это свойство включает устаревшее поведение для меток. Если true,\nметка также действует как принудительная группа сходства между\nвиртуальными машинами и хостом.\n\n\nЭтот параметр используется только для кластеров с версией\nсовместимости 4.3 или ниже.\n",
+            "example": false
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": "123"
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "NewAL"
+          },
+          "read_only": {
+            "type": "boolean",
+            "description": "Свойство read_only указывает на метку, которую нельзя изменить.\nОбычно это происходит при перечислении меток, созданных внутри\nкомпании.\n",
+            "example": false
+          },
+          "hosts": {
+            "xml": {
+              "wrapped": true,
+              "name": "hosts"
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Host"
+            }
+          },
+          "vms": {
+            "xml": {
+              "wrapped": true,
+              "name": "vms"
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vm"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "AffinityRule": {
+        "type": "object",
+        "xml": {
+          "name": "affinity_rule"
+        },
+        "description": "Общее определение правила для группы сходства. Каждый поддерживаемый тип\nресурса (виртуальная машина, хост) контролируется отдельным правилом.\nЭто позволяет выражать такие правила, как отсутствие сходства между\nопределенными виртуальными машинами, но жесткое сходство между\nопределенными виртуальными машинами и виртуальными хостами.\n",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Указывает, использует ли группа сходства это правило или нет. Этот\nатрибут является необязательным при создании и считается\nнеобязательным, если он не указан, устанавливается значение `true`.\nЕсли этот атрибут не указан для операции обновления, считается, что\nатрибут AffinityGroup **positive** также установлен в значение\n`true`. Базовое значение enabled будет сохранено, если оба атрибута\n**enabled** и **positive** отсутствуют.\n",
+            "example": true
+          },
+          "enforcing": {
+            "type": "boolean",
+            "description": "Указывает, использует ли группа сходства жесткое или мягкое\nпринудительное применение сходства, применяемого к ресурсам, которые\nконтролируются этим правилом. Этот аргумент является обязательным,\nесли правило включено, и игнорируется, если правило отключено.\n",
+            "example": true
+          },
+          "positive": {
+            "type": "boolean",
+            "description": "Указывает, применяет ли группа сходства положительное или\nотрицательное сходство к ресурсам, которые контролируются этим\nправилом. Этот аргумент является обязательным, если правило\nвключено, и игнорируется, если правило отключено.\n",
+            "example": false
+          }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "description": "Тип, представляющий агента изоляции",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Адрес агента изоляции",
+            "example": "192.168.10.15"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "concurrent": {
+            "type": "boolean",
+            "description": "Указывает, следует ли использовать агент одновременно или\nпоследовательно.\n",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "encrypt_options": {
+            "type": "boolean",
+            "description": "Указывает, следует ли шифровать параметры.",
+            "example": true
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 4998
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "FA-001"
+          },
+          "options": {
+            "description": "Параметры агента ограждения (список пар ключ-значение, разделенный\nзапятыми).\n",
+            "type": "array",
+            "xml": {
+              "name": "options",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            }
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Порядок этого агента при использовании с другими агентами.",
+            "example": 10
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль для доступа к агенту изоляции"
+          },
+          "port": {
+            "type": "string",
+            "description": "Порт для подключения к агенту изоляции",
+            "example": 5387
+          },
+          "type": {
+            "type": "string",
+            "description": "Тип агента изоляции",
+            "example": "ilo4"
+          },
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя для доступа к агенту изоляции"
+          }
+        }
+      },
+      "API": {
+        "type": "object",
+        "xml": {
+          "name": "api"
+        },
+        "description": "Этот тип содержит информацию, возвращаемую корневой службой API.\n\nЧтобы получить эту информацию, отправьте запрос следующим образом:\n\n```\nGET /ovirt-engine/api\n```\n\nРезультат будет таким:\n\n```\n<api>\n  <link rel=\"hosts\" href=\"/ovirt-engine/api/hosts\"/>\n  <link rel=\"vms\" href=\"/ovirt-engine/api/vms\"/>\n  ...\n  <product_info>\n    <name>oVirt Engine</name>\n    <vendor>ovirt.org</vendor>\n    <version>\n      <build>0</build>\n      <full_version>4.1.0_master</full_version>\n      <major>4</major>\n      <minor>1</minor>\n      <revision>0</revision>\n    </version>\n  </product_info>\n  <special_objects>\n    <link rel=\"templates/blank\" href=\"...\"/>\n    <link rel=\"tags/root\" href=\"...\"/>\n  </special_objects>\n  <summary>\n    <vms>\n      <total>10</total>\n      <active>3</active>\n    </vms>\n    <hosts>\n      <total>2</total>\n      <active>2</active>\n    </hosts>\n    <users>\n      <total>8</total>\n      <active>2</active>\n    </users>\n    <storage_domains>\n      <total>2</total>\n      <active>2</active>\n    </storage_domains>\n  </summary>\n  <time>2016-12-12T12:22:25.866+01:00</time>\n</api>\n```\n",
+        "properties": {
+          "product_info": {
+            "description": "Информация о продукте, такая как его имя, имя поставщика и версия.",
+            "$ref": "#/components/schemas/ProductInfo"
+          },
+          "special_objects": {
+            "description": "Ссылки на специальные объекты, такие как пустой шаблон и корень\nиерархии тегов.\n",
+            "type": "array",
+            "xml": {
+              "name": "special_objects",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/SpecialObjects"
+            }
+          },
+          "summary": {
+            "description": "Сводка, содержащая общее количество соответствующих объектов, таких\nкак виртуальные машины, хосты и домены хранения.\n",
+            "$ref": "#/components/schemas/ApiSummary"
+          },
+          "time": {
+            "type": "string",
+            "format": "time"
+          }
+        }
+      },
+      "ApiSummary": {
+        "type": "object",
+        "xml": {
+          "name": "api_summary"
+        },
+        "description": "Сводка, содержащая общее количество соответствующих объектов, таких как\nвиртуальные машины, хосты и домены хранения.\n",
+        "properties": {
+          "hosts": {
+            "description": "Сводка хостов",
+            "$ref": "#/components/schemas/ApiSummaryItem"
+          },
+          "storage_domains": {
+            "description": "Сводка доменов хранения",
+            "$ref": "#/components/schemas/ApiSummaryItem"
+          },
+          "users": {
+            "description": "Сводка пользователей",
+            "$ref": "#/components/schemas/ApiSummaryItem"
+          },
+          "vms": {
+            "description": "Сводка виртуальных машин",
+            "$ref": "#/components/schemas/ApiSummaryItem"
+          }
+        }
+      },
+      "ApiSummaryItem": {
+        "type": "object",
+        "description": "Этот тип описывает элемент сводки API. Каждый элемент содержит общее и\nактивное количество какого-либо объекта.\n",
+        "properties": {
+          "active": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Общее количество активных объектов.",
+            "example": 5
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Общее количество объектов.",
+            "example": 20
+          }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "xml": {
+          "name": "application"
+        },
+        "description": "Описывает приложение, установленное на виртуальной машине. О приложениях сообщает гостевой агент, если вы развертываете его в операционной системе виртуальной машины.\n\nЧтобы получить эту информацию, отправьте запрос следующим образом:\n\n```\nGET /ovirt-engine/api/vms/123/applications/456\n```\n\nРезультат будет таким:\n\n```\n<application href=\"/ovirt-engine/api/vms/123/applications/456\" id=\"456\">\n  <name>application-test-1.0.0-0.el7</name>\n  <vm href=\"/ovirt-engine/api/vms/123\" id=\"123\"/>\n</application>\n```\n",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 4344
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "app-test"
+          }
+        }
+      },
+      "Architecture": {
+        "type": "string",
+        "description": "Тип, содержащий список процессорных архитектур",
+        "xml": {
+          "name": "architecture"
+        },
+        "enum": [
+          "ppc64",
+          "s390x",
+          "undefined",
+          "x86_64"
+        ],
+        "example": "x86_64"
+      },
+      "AuthorizedKey": {
+        "type": "object",
+        "description": "Тип, описывающий ключ авторизации",
+        "xml": {
+          "name": "authorized_key"
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "key": {
+            "type": "string",
+            "description": "Значение ключа"
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста."
+          }
+        }
+      },
+      "AutoNumaStatus": {
+        "type": "string",
+        "description": "Тип, содержащий списов возможных статусов numa",
+        "xml": {
+          "name": "auto_numa_status"
+        },
+        "enum": [
+          "disable",
+          "enable",
+          "unknown"
+        ],
+        "example": "unknown"
+      },
+      "AutoPinningPolicy": {
+        "type": "string",
+        "xml": {
+          "name": "auto_pinning_policy"
+        },
+        "description": "Описывает политику закрепления ЦП и NUMA.\n\n### Описание значений\n\n* **adjust** - Закрепление ЦП и NUMA будет настроено выделенным хостом.\n\n  В настоящее время это означает, что привязка ЦП и NUMA будет\nиспользовать топологию ЦП выделенного хоста. Конфигурация виртуальной\nмашины будет автоматически настроена в соответствии с хостом для\nдостижения максимально возможной производительности.\n\n* **disable** - Закрепление ЦП и NUMA рассчитываться не будет.\n\n  В настоящее время это означает, что закрепление ЦП и NUMA не будет\nрассчитываться в соответствии с текущей конфигурацией виртуальной\nмашины. По умолчанию топология виртуальной машины включает 1 сокет, 1\nядро ​​и 1 поток.\n\n* **existing** - Закрепление ЦП и NUMA будет настроено в соответствии с текущим\nсостоянием виртуальной машины.\n\n  В настоящее время это означает, что привязка ЦП и NUMA будет\nиспользовать предоставленную топологию ЦП виртуальной машины. Без\nуказанной топологии ЦП будут использоваться настройки ядра по умолчанию\n(топология виртуальной машины с 1 сокетом, 1 ядром и 1 потоком).\n",
+        "enum": [
+          "adjust",
+          "disable",
+          "existing"
+        ],
+        "example": "existing"
+      },
+      "Backup": {
+        "type": "object",
+        "description": "Тип, описывающий резервную копию",
+        "xml": {
+          "name": "backup"
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата создания резервной копии."
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "from_checkpoint_id": {
+            "type": "string",
+            "description": "Идентификатор контрольной точки, с которой следует начать\nинкрементное резервное копирование.\n"
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 9443
+          },
+          "modification_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата изменения резервной копии."
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "Back-001"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/BackupPhase",
+            "description": "Этап операции резервного копирования."
+          },
+          "to_checkpoint_id": {
+            "type": "string",
+            "description": "Идентификатор контрольной точки, созданный в результате этой\nоперации резервного копирования. Этот идентификатор можно\nиспользовать в качестве *fromCheckpointId* следующего инкрементного\nрезервного копирования.\n"
+          }
+        }
+      },
+      "BackupPhase": {
+        "type": "string",
+        "xml": {
+          "name": "backup_phase"
+        },
+        "enum": [
+          "failed",
+          "finalizing",
+          "initializing",
+          "ready",
+          "starting",
+          "succeeded"
+        ],
+        "description": "Тип, содержащий список возможных фаз резервного копирования.\n\n### Описание значений\n\n* **failed** - Заключительный этап указывает на то, что резервное копирование не\nудалось.\n* **finalizing** - На этом этапе резервное копирование вызывает операцию **stop_backup**,\nчтобы завершить резервное копирование и разблокировать соответствующий\nдиск.\n* **initializing** - Начальный этап резервного копирования. Он устанавливается при создании\nобъекта.\n* **ready** - Этот этап означает, что URL-адреса резервных копий соответствующих\nдисков готовы к использованию и загрузке с помощью передачи изображений.\n* **starting** - Фаза устанавливается перед вызовом операции **start_backup** в\n**vdsm**/**libvirt** (это означает, что для завершения потока необходимо\nвызвать операцию **stop_backup**).\n* **succeeded** - Заключительный этап указывает на успешное завершение резервного\nкопирования.\n",
+        "example": "succeeded"
+      },
+      "Balance": {
+        "type": "object",
+        "description": "Тип, описывающий политику балансировки нагрузки",
+        "xml": {
+          "name": "balance"
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Произвольный текст, содержащий комментарии об этом объекте."
+          },
+          "description": {
+            "type": "string",
+            "description": "Удобочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 5043
+          },
+          "name": {
+            "type": "string",
+            "description": "Удобочитаемое имя в виде обычного текста.",
+            "example": "Bal-001"
+          },
+          "scheduling_policy": {
+            "description": "Применяемая политика планирования",
+            "$ref": "#/components/schemas/SchedulingPolicy"
+          },
+          "scheduling_policy_unit": {
+            "$ref": "#/components/schemas/SchedulingPolicyUnit"
+          }
+        }
+      },
+      "Bios": {
+        "type": "object",
+        "description": "Тип, описывающий параметры BIOS",
+        "xml": {
+          "name": "bios"
+        },
+        "properties": {
+          "boot_menu": {
+            "$ref": "#/components/schemas/BootMenu",
+            "description": "Статус загрузочного меню (включено/выключено)"
+          },
+          "type": {
+            "$ref": "#/components/schemas/BiosType",
+            "description": "Комбинация типа чипсета и BIOS."
+          }
+        }
+      },
+      "BiosType": {
+        "type": "string",
+        "xml": {
+          "name": "bios_type"
+        },
+        "description": "Тип, представляющий собой комбинацию чипсета и типа BIOS.\n\n### Описание значений\n\n* **cluster_default** - Используется значение по умолчанию, установленное для кластера.\n\n  Это значение не может быть использовано в отношении кластера.\n\n* **i440fx_sea_bios** - Чипсет i440fx с поддержкой SeaBIOS.\n\n  Для архитектур, отличных от x86, это единственное допустимое значение не\nпо умолчанию.\n\n* **q35_ovmf** - Чипсет q35 с BIOS OVMF (UEFI).\n* **q35_sea_bios** - Чипсет q35 с поддержкой SeaBIOS.\n* **q35_secure_boot** - Чипсет q35 с BIOS OVMF (UEFI) с включенной функцией SecureBoot.\n",
+        "enum": [
+          "cluster_default",
+          "i440fx_sea_bios",
+          "q35_ovmf",
+          "q35_sea_bios",
+          "q35_secure_boot"
+        ],
+        "example": "q35_ovmf"
+      },
+      "BlockStatistic": {
+        "type": "object",
+        "xml": {
+          "name": "block_statistic"
+        },
+        "properties": {
+          "statistics": {
+            "type": "array",
+            "xml": {
+              "name": "statistics",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Statistic"
+            }
+          }
+        }
+      },
+      "Bonding": {
+        "type": "object",
+        "xml": {
+          "name": "bonding"
+        },
+        "description": "Тип, описывающий объединение сетевых интерфейсов (бонд)",
+        "properties": {
+          "ad_partner_mac": {
+            "description": "Свойство **ad_partner_mac** режима бондинга 4. Режим бондинга 4 -\nэто стандарт 802.3ad, который также называется динамической\nагрегацией каналов. **ad_partner_mac** - MAC-адрес системы\n(коммутатора) на другом конце бонда. Этот параметр доступен только\nдля чтения. Его установка не оказывает никакого влияния на бонд. Он\nизвлекается из файла **/sys/class/net/bondX/bonding/ad_partner_mac**\nсистемы, на которой расположен бонд.\n",
+            "$ref": "#/components/schemas/Mac"
+          },
+          "options": {
+            "description": "Список элементов опций для связанного интерфейса. Каждая опция\nсодержит атрибуты имени и значения свойства. Требуется только при\nдобавлении связанных интерфейсов.\n",
+            "type": "array",
+            "xml": {
+              "name": "options",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            }
+          },
+          "slaves": {
+            "description": "Список ведомых сетевых карт для связанного интерфейса. Требуется\nтолько при добавлении связанных интерфейсов.\n",
+            "type": "array",
+            "xml": {
+              "name": "slaves",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/HostNic"
+            }
+          },
+          "active_slave": {
+            "description": "Свойство **active_slave** в режимах бондинга, которые его\nподдерживают (active-backup, balance-alb и balance-tlb). Данный\nпараметр доступен только для чтения. Его установка не оказывает\nникакого влияния на работу соединения. Он извлекается из файла\n/sys/class/net/bondX/bonding/active_slave в системе, где расположен\nбонд.\n\nНапример:\n\n```\nGET /ovirt-engine/api/hosts/123/nics/321\n```\n\nВернет ответ:\n\n```\n<host_nic href=\"/ovirt-engine/api/hosts/123/nics/321\" id=\"321\">\n  ...\n  <bonding>\n    <slaves>\n      <host_nic href=\"/ovirt-engine/api/hosts/123/nics/456\" id=\"456\" />\n      ...\n    </slaves>\n    <active_slave href=\"/ovirt-engine/api/hosts/123/nics/456\" id=\"456\" />\n  </bonding>\n  ...\n</host_nic>\n```\n",
+            "xml": {
+              "wrapped": true
+            },
+            "$ref": "#/components/schemas/HostNic"
+          }
+        }
+      },
+      "Bookmark": {
+        "description": "Тип, описывающий закладку.",
+        "type": "object",
+        "xml": {
+          "name": "bookmark"
+        },
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста.",
+            "example": "DefaultClusterHosts"
+          },
+          "value": {
+            "type": "string",
+            "description": "Значение закладки, представляющее поиск в менеджере.",
+            "example": "Host: cluster=Default"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Boot": {
+        "description": "Тип, описывающий конфигурацию последовательности загрузки виртуальной машины.",
+        "type": "object",
+        "xml": {
+          "name": "boot"
+        },
+        "properties": {
+          "devices": {
+            "type": "array",
+            "xml": {
+              "name": "devices",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/BootDevice"
+            }
+          }
+        }
+      },
+      "BootDevice": {
+        "type": "string",
+        "description": "Тип, содержащий список устройств, с которых может загружаться виртуальная машина\n\n### Описание значений\n\n* **cdrom** - Загрузка с CD-ROM. CD-ROM может быть выбран из списка ISO-файлов,\nдоступных в домене хранения, подключенном к центру данных, к которому\nпринадлежит виртуальная машина.\n* **network** - Загрузка из сети с использованием PXE. Необходимо, чтобы в сети, к\nкоторой подключена виртуальная машина, был настроен PXE.\n* **hd** - Загрузка с жесткого диска.\n",
+        "enum": [
+          "cdrom",
+          "hd",
+          "network"
+        ],
+        "example": "cdrom"
+      },
+      "BootMenu": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "boot_menu"
+        },
+        "description": "Тип, описывающий конфигурацию меню загрузки для виртуальных машин и шаблонов.",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Включено загрузочное меню для данной виртуальной машины (или шаблона) или нет.",
+            "example": true
+          }
+        }
+      },
+      "BootProtocol": {
+        "type": "string",
+        "description": "Тип, содержащий список методов назначения IP-адреса сетевой карте.\n\n### Описание значений\n\n* **autoconf** - Автоконфигурация адресов без без сохранения состояния (SLAAC).\n\n  **Только для IPv6**\n\n* **dhcp** - Протокол динамической конфигурации хоста.\n\n* **none** - Отсутствует конфигурация адреса.\n\n* **poly_dhcp_autoconf** - Конфигурация SLAAC (Stateless address auto-configuration) + DHCP.\n\n  **Только для IPv6**\n\n* **static** - Статически заданные адрес, маска и шлюз.\n",
+        "xml": {
+          "name": "boot_protocol",
+          "wrapped": false
+        },
+        "enum": [
+          "autoconf",
+          "dhcp",
+          "none",
+          "poly_dhcp_autoconf",
+          "static"
+        ],
+        "example": "dhcp"
+      },
+      "BrickProfileDetail": {
+        "type": "object",
+        "xml": {
+          "name": "brick_profile_detail"
+        },
+        "properties": {
+          "profile_details": {
+            "$ref": "#/components/schemas/ProfileDetail"
+          }
+        }
+      },
+      "Cdrom": {
+        "type": "object",
+        "description": "Тип, описывающий устройство ВМ типа cdrom",
+        "xml": {
+          "wrapped": false,
+          "name": "cdrom"
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "file": {
+            "description": "Прикреплённый ISO-образ",
+            "$ref": "#/components/schemas/File"
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "instance_type": {
+            "description": "Опционально ссылается на тип экземпляра, для которого используется устройство.",
+            "$ref": "#/components/schemas/InstanceType"
+          },
+          "template": {
+            "description": "Опционально ссылается на шаблон, в котором используется устройство.",
+            "$ref": "#/components/schemas/Template"
+          },
+          "vms": {
+            "type": "array",
+            "xml": {
+              "name": "vms",
+              "wrapped": true
+            },
+            "description": "Ссылки на виртуальные машины, использующие данное устройство. Устройство может использоваться несколькими виртуальными машинами; например, общий диск может одновременно использоваться двумя или более виртуальными машинами.\n",
+            "items": {
+              "$ref": "#/components/schemas/Vm"
+            }
+          }
+        }
+      },
+      "Certificate": {
+        "type": "object",
+        "description": "Тип, описывающий сертификат",
+        "xml": {
+          "wrapped": false,
+          "name": "certificate"
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "content": {
+            "type": "string",
+            "description": "Содержимое сертификата"
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "organization": {
+            "type": "string",
+            "description": "Наименование организации",
+            "example": [
+              "GlobalSign"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "description": "Наименование субъекта"
+          }
+        }
+      },
+      "Checkpoint": {
+        "type": "object",
+        "description": "Тип, описывающий контрольную точку при инкрементном резервном копировании",
+        "xml": {
+          "name": "checkpoint",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Время создания контрольной точки"
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Идентификатор родительской контрольной точки"
+          },
+          "state": {
+            "$ref": "#/components/schemas/CheckpointState"
+          },
+          "disks": {
+            "type": "array",
+            "xml": {
+              "name": "disks",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Disk"
+            }
+          },
+          "vm": {
+            "$ref": "#/components/schemas/Vm"
+          }
+        }
+      },
+      "CheckpointState": {
+        "type": "string",
+        "xml": {
+          "name": "checkpoint_state",
+          "wrapped": false
+        },
+        "enum": [
+          "created",
+          "invalid"
+        ],
+        "description": "Определяет перечень возможных состояний контрольных точек.\n\n### Описание значений\n\n* created - Начальное состояние контрольной точки. Оно устанавливается при создании сущности.\n* invalid - Состояние INVALID устанавливается, \nкогда контрольная точка больше не может использоваться для инкрементного резервного копирования и должна быть удалена (например, после фиксации старого снимка ВМ).\n"
+      },
+      "CloudInitNetworkProtocol": {
+        "type": "string",
+        "xml": {
+          "name": "cloud_init_network_protocol",
+          "wrapped": false
+        },
+        "description": "Определяет значения для протокола cloud-init. Этот протокол определяет, как будут отформатированы сетевые параметры cloud-init перед передачей их виртуальной машине для обработки cloud-init.\n\nПоддерживаемые протоколы зависят от версии cloud-init.\n\n### Описание значений\n\n* **eni** - Устаревший протокол. Не поддерживает IPv6.\n* **openstack_metadata** - Преемник протокола ENI, с поддержкой IPv6 и др. Это значение используется по умолчанию.\n",
+        "enum": [
+          "eni",
+          "openstack_metadata"
+        ]
+      },
+      "Cluster": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "cluster"
+        },
+        "description": "Тип, представляющий кластер.\n\nJSON-представление кластера:\n\n```\n{\n  \"cluster\" : [ {\n    \"ballooning_enabled\" : \"false\",\n    \"cpu\" : {\n      \"architecture\" : \"x86_64\",\n      \"type\" : \"Intel SandyBridge Family\"\n    },\n    \"custom_scheduling_policy_properties\" : {\n      \"property\" : [ {\n        \"name\" : \"HighUtilization\",\n        \"value\" : \"80\"\n      }, {\n        \"name\" : \"CpuOverCommitDurationMinutes\",\n        \"value\" : \"2\"\n      } ]\n    },\n    \"error_handling\" : {\n      \"on_error\" : \"migrate\"\n    },\n    \"fencing_policy\" : {\n      \"enabled\" : \"true\",\n      \"skip_if_connectivity_broken\" : {\n        \"enabled\" : \"false\",\n        \"threshold\" : \"50\"\n      },\n      \"skip_if_gluster_bricks_up\" : \"false\",\n      \"skip_if_gluster_quorum_not_met\" : \"false\",\n      \"skip_if_sd_active\" : {\n        \"enabled\" : \"false\"\n      }\n    },\n    \"gluster_service\" : \"false\",\n    \"firewall_type\" : \"iptables\",\n    \"ha_reservation\" : \"false\",\n    \"ksm\" : {\n      \"enabled\" : \"true\",\n      \"merge_across_nodes\" : \"true\"\n    },\n    \"memory_policy\" : {\n      \"over_commit\" : {\n        \"percent\" : \"100\"\n      },\n      \"transparent_hugepages\" : {\n        \"enabled\" : \"true\"\n      }\n    },\n    \"migration\" : {\n      \"auto_converge\" : \"inherit\",\n      \"bandwidth\" : {\n        \"assignment_method\" : \"auto\"\n      },\n      \"compressed\" : \"inherit\",\n      \"policy\" : {\n        \"id\" : \"00000000-0000-0000-0000-000000000000\"\n      }\n    },\n    \"required_rng_sources\" : {\n      \"required_rng_source\" : [ \"random\" ]\n    },\n    \"switch_type\" : \"legacy\",\n    \"threads_as_cores\" : \"false\",\n    \"trusted_service\" : \"false\",\n    \"tunnel_migration\" : \"false\",\n    \"version\" : {\n      \"major\" : \"4\",\n      \"minor\" : \"1\"\n    },\n    \"virt_service\" : \"true\",\n    \"data_center\" : {\n      \"href\" : \"/ovirt-engine/api/datacenters/123\",\n      \"id\" : \"123\"\n    },\n    \"mac_pool\" : {\n      \"href\" : \"/ovirt-engine/api/macpools/456\",\n      \"id\" : \"456\"\n    },\n    \"scheduling_policy\" : {\n      \"href\" : \"/ovirt-engine/api/schedulingpolicies/789\",\n      \"id\" : \"789\"\n    },\n    \"actions\" : {\n      \"link\" : [ {\n        \"href\" : \"/ovirt-engine/api/clusters/234/resetemulatedmachine\",\n        \"rel\" : \"resetemulatedmachine\"\n      } ]\n    },\n    \"name\" : \"Default\",\n    \"description\" : \"The default server cluster\",\n    \"href\" : \"/ovirt-engine/api/clusters/234\",\n    \"id\" : \"234\",\n    \"link\" : [ {\n      \"href\" : \"/ovirt-engine/api/clusters/234/permissions\",\n      \"rel\" : \"permissions\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/cpuprofiles\",\n      \"rel\" : \"cpuprofiles\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/networkfilters\",\n      \"rel\" : \"networkfilters\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/networks\",\n      \"rel\" : \"networks\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/affinitygroups\",\n      \"rel\" : \"affinitygroups\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/glusterhooks\",\n      \"rel\" : \"glusterhooks\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/glustervolumes\",\n      \"rel\" : \"glustervolumes\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/enabledfeatures\",\n      \"rel\" : \"enabledfeatures\"\n    }, {\n      \"href\" : \"/ovirt-engine/api/clusters/234/externalnetworkproviders\",\n      \"rel\" : \"externalnetworkproviders\"\n    } ]\n  } ]\n}\n```\n",
+        "properties": {
+          "ballooning_enabled": {
+            "type": "boolean",
+            "description": "Статус баллунинга (включен/выключен)",
+            "example": true
+          },
+          "bios_type": {
+            "description": "Комбинация типа чипсета и BIOS.",
+            "$ref": "#/components/schemas/BiosType"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "cpu": {
+            "description": "Параметры CPU",
+            "$ref": "#/components/schemas/Cpu"
+          },
+          "custom_scheduling_policy_properties": {
+            "description": "Свойства пользовательской политики планирования кластера.\n\nЭти необязательные свойства переопределяют свойства политики планирования, \nуказанной ссылкой `scheduling_policy``, и применяются только для данного \nконкретного кластера.\n\nНапример, чтобы обновить пользовательские свойства кластера, отправьте запрос:\n\n```\nPUT /ovirt-engine/api/clusters/123\n```\n\nС телом запроса:\n\n```\n<cluster>\n  <custom_scheduling_policy_properties>\n    <property>\n      <name>HighUtilization</name>\n      <value>70</value>\n    </property>\n  </custom_scheduling_policy_properties>\n</cluster>\n```\n\nОперации обновления с использованием атрибута `custom_scheduling_policy_properties`` \nне будут обновлять свойства политики планирования, указанной ссылкой \n`scheduling_policy``, они будут отражаться только на данном конкретном кластере.\n",
+            "xml": {
+              "name": "custom_scheduling_policy_properties",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Property"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "display": {
+            "$ref": "#/components/schemas/Display"
+          },
+          "error_handling": {
+            "$ref": "#/components/schemas/ErrorHandling"
+          },
+          "fencing_policy": {
+            "description": "Собственная политика изоляции, которая может быть определена для кластера.\n\nНапример:\n\n```\nPUT /ovirt-engine/api/cluster/123\n```\n\nС таким телом запроса:\n\n```\n<cluster>\n  <fencing_policy>\n    <enabled>true</enabled>\n    <skip_if_sd_active>\n      <enabled>false</enabled>\n    </skip_if_sd_active>\n    <skip_if_connectivity_broken>\n      <enabled>false</enabled>\n      <threshold>50</threshold>\n    </skip_if_connectivity_broken>\n  </fencing_policy>\n</cluster>\n```\n",
+            "$ref": "#/components/schemas/FencingPolicy"
+          },
+          "fips_mode": {
+            "description": "Режим FIPS кластера.",
+            "$ref": "#/components/schemas/FipsMode"
+          },
+          "firewall_type": {
+            "description": "Тип межсетевого экрана, который будет использоваться на хостах данного кластера.",
+            "$ref": "#/components/schemas/FirewallType"
+          },
+          "gluster_service": {
+            "type": "boolean",
+            "description": "Статус служб Gluster",
+            "example": false
+          },
+          "gluster_tuned_profile": {
+            "type": "string",
+            "description": "Имя настроенного профиля.",
+            "example": "GlusterProf"
+          },
+          "ha_reservation": {
+            "type": "boolean",
+            "description": "Управляет резервированием ресурсов для высокодоступных ВМ",
+            "example": true
+          },
+          "id": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            },
+            "example": 7789
+          },
+          "ksm": {
+            "description": "Параметры KSM",
+            "$ref": "#/components/schemas/Ksm"
+          },
+          "log_max_memory_used_threshold": {
+            "type": "integer",
+            "description": "Порог потребления памяти для регистрации событий журнала аудита.",
+            "example": 95
+          },
+          "log_max_memory_used_threshold_type": {
+            "description": "Тип порога потребления памяти для регистрации событий журнала аудита.",
+            "$ref": "#/components/schemas/LogMaxMemoryUsedThresholdType"
+          },
+          "memory_policy": {
+            "description": "Группа свойств, относящихся к потреблению памяти виртуальными машинами (например, переподписка, баллунинг)",
+            "$ref": "#/components/schemas/MemoryPolicy"
+          },
+          "migration": {
+            "description": "Параметры миграции",
+            "xml": {
+              "name": "migration",
+              "wrapped": true
+            },
+            "$ref": "#/components/schemas/MigrationOptions"
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста.",
+            "example": "Default"
+          },
+          "required_rng_sources": {
+            "description": "Набор источников генератора случайных чисел (ГСЧ), требуемых от каждого узла кластера.\n\nПри чтении возвращается urandom плюс дополнительные \nвыбранные источники RNG. При записи источник RNG `urandom` не может быть удален.\n",
+            "xml": {
+              "name": "required_rng_sources",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RngSource"
+            }
+          },
+          "serial_number": {
+            "$ref": "#/components/schemas/SerialNumber",
+            "description": "Политика серийных номеров"
+          },
+          "supported_versions": {
+            "xml": {
+              "name": "supported_versions",
+              "wrapped": true
+            },
+            "description": "Поддерживаемые версии совместимости",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Version"
+            }
+          },
+          "switch_type": {
+            "description": "Тип коммутатора, который будет использоваться всеми сетями в данном кластере.",
+            "$ref": "#/components/schemas/SwitchType"
+          },
+          "threads_as_cores": {
+            "type": "boolean",
+            "description": "Статус функции \"Считать потоки как ядра\"",
+            "example": false
+          },
+          "trusted_service": {
+            "type": "boolean",
+            "description": "Статус \"Доверенной службы\" в политиках планирования",
+            "example": false
+          },
+          "tunnel_migration": {
+            "type": "boolean",
+            "example": false
+          },
+          "version": {
+            "description": "Bерсия совместимости кластера\n\nВсе хосты в этом кластере должны поддерживать как минимум эту версию совместимости.\n\nНапример:\n\n```\nGET /ovirt-engine/api/clusters/123\n```\n\nВ ответ будет получено:\n\n```\n<version>\n        <major>4</major>\n        <minor>6</minor>\n</version>\n```\n\nЧтобы обновить версию совместимости, используйте:\n\n```\nPUT /ovirt-engine/api/clusters/123\n```\n\nС телом запроса следующего вида:\n\n```\n<cluster>\n  <version>\n    <major>4</major>\n    <minor>7</minor>\n  </version>\n</cluster>\n```\nДля обновления версии совместимости кластера все хосты в кластере \nдолжны поддерживать новую версию совместимости.\n",
+            "$ref": "#/components/schemas/Version"
+          },
+          "virt_service": {
+            "type": "boolean",
+            "description": "Статус службы Virt",
+            "example": true
+          },
+          "vnc_encryption": {
+            "type": "boolean",
+            "description": "Статус шифрования VNC-трафика. Значение по умолчанию для этого свойства равно `false`.",
+            "example": true
+          },
+          "affinity_groups": {
+            "type": "array",
+            "description": "Список групп сходства, связанных с кластером",
+            "xml": {
+              "name": "affinity_groups",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/AffinityGroup"
+            }
+          },
+          "cpu_profiles": {
+            "type": "array",
+            "description": "Список профилей ЦПУ, созданных в кластере",
+            "xml": {
+              "name": "cpu_profiles",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/CpuProfile"
+            }
+          },
+          "data_center": {
+            "description": "Центр данных, к которому относится кластер",
+            "$ref": "#/components/schemas/DataCenter"
+          },
+          "enabled_features": {
+            "type": "array",
+            "description": "Пользовательские функции, включенные для кластера.",
+            "xml": {
+              "name": "enabled_features",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ClusterFeature"
+            }
+          },
+          "external_network_providers": {
+            "type": "array",
+            "description": "Список внешних провайдеров сети, доступных в кластере",
+            "xml": {
+              "name": "enabled_features",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExternalProvider"
+            }
+          },
+          "gluster_hooks": {
+            "type": "array",
+            "description": "Список включенных хуков Gluster",
+            "xml": {
+              "name": "gluster_hooks",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/GlusterHook"
+            }
+          },
+          "gluster_volumes": {
+            "type": "array",
+            "description": "Список томов Gluster",
+            "xml": {
+              "name": "gluster_volumes",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/GlusterVolume"
+            }
+          },
+          "mac_pool": {
+            "description": "Пул MAC-адресов, используемый в кластере",
+            "$ref": "#/components/schemas/MacPool"
+          },
+          "management_network": {
+            "description": "Сеть управления, назначенная кластеру",
+            "$ref": "#/components/schemas/Network"
+          },
+          "network_filters": {
+            "type": "array",
+            "description": "Сетевые фильтры, применяемые в кластере",
+            "xml": {
+              "name": "network_filters",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/NetworkFilter"
+            }
+          },
+          "networks": {
+            "type": "array",
+            "description": "Список сетей, назначенных кластеру",
+            "xml": {
+              "name": "networks",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            }
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Список разрешений, определённых для кластера",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "scheduling_policy": {
+            "description": "Политика планирования, используемая в кластере по умолчанию",
+            "$ref": "#/components/schemas/SchedulingPolicy"
+          }
+        }
+      },
+      "ClusterFeature": {
+        "type": "object",
+        "xml": {
+          "name": "cluster_feature",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий дополнительную функцию, доступную на уровне кластера.",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 554468
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "cluster_level": {
+            "description": "Возможности, поддерживаемые конкретным уровнем кластера.",
+            "$ref": "#/components/schemas/ClusterLevel"
+          }
+        }
+      },
+      "ClusterLevel": {
+        "type": "object",
+        "description": "Описывает возможности, поддерживаемые конкретным уровнем кластера.",
+        "xml": {
+          "name": "cluster_level",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "cpu_types": {
+            "type": "array",
+            "xml": {
+              "name": "cpu_types",
+              "wrapped": true
+            },
+            "description": "Типы процессоров, поддерживаемые данным уровнем кластера.",
+            "items": {
+              "$ref": "#/components/schemas/CpuType"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 5534224
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "permits": {
+            "type": "array",
+            "xml": {
+              "name": "permits",
+              "wrapped": true
+            },
+            "description": "Разрешения, поддерживаемые данным уровнем кластера.",
+            "items": {
+              "$ref": "#/components/schemas/Permit"
+            }
+          },
+          "cluster_features": {
+            "type": "array",
+            "xml": {
+              "name": "cluster_features",
+              "wrapped": true
+            },
+            "description": "Дополнительные возможности, поддерживаемые этим уровнем кластера.",
+            "items": {
+              "$ref": "#/components/schemas/ClusterFeature"
+            }
+          }
+        }
+      },
+      "ClusterUpgradeAction": {
+        "type": "string",
+        "xml": {
+          "name": "cluster_upgrade_action",
+          "wrapped": false
+        },
+        "description": "Тип действия по обновлению кластера.\n\n### Описание значений\n\n* **finish** - Действие обновления, которое должно быть передано для завершения \nпроцесса обновления кластера путем установки флага `upgrade_running` в `false`.\nЕго следует использовать в конце процесса обновления кластера.\n* **start** - Действие обновления, которое должно быть передано для запуска процесса \nобновления кластера путем установки флага `upgrade_running` в `true`.\nЕго следует использовать в начале процесса обновления кластера.\n",
+        "enum": [
+          "finish",
+          "start"
+        ]
+      },
+      "Configuration": {
+        "type": "object",
+        "xml": {
+          "name": "configuration",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий документ конфигурации ВМ",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "Документ, описывающий виртуальную машину.\n\nПример документа OVF:\n\n```\n<?xml version='1.0' encoding='UTF-8'?>\n<ovf:Envelope xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1/\"\n  xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"\n  xmlns:vssd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData\"\n  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n  ovf:version=\"3.5.0.0\">\n  <References/>\n  <Section xsi:type=\"ovf:NetworkSection_Type\">\n    <Info>List of networks</Info>\n    <Network ovf:name=\"Network 1\"/>\n  </Section>\n  <Section xsi:type=\"ovf:DiskSection_Type\">\n    <Info>List of Virtual Disks</Info>\n  </Section>\n  <Content ovf:id=\"out\" xsi:type=\"ovf:VirtualSystem_Type\">\n    <CreationDate>2014/12/03 04:25:45</CreationDate>\n    <ExportDate>2015/02/09 14:12:24</ExportDate>\n    <DeleteProtected>false</DeleteProtected>\n    <SsoMethod>guest_agent</SsoMethod>\n    <IsSmartcardEnabled>false</IsSmartcardEnabled>\n    <TimeZone>Etc/GMT</TimeZone>\n    <default_boot_sequence>0</default_boot_sequence>\n    <Generation>1</Generation>\n    <VmType>1</VmType>\n    <MinAllocatedMem>1024</MinAllocatedMem>\n    <IsStateless>false</IsStateless>\n    <IsRunAndPause>false</IsRunAndPause>\n    <AutoStartup>false</AutoStartup>\n    <Priority>1</Priority>\n    <CreatedByUserId>fdfc627c-d875-11e0-90f0-83df133b58cc</CreatedByUserId>\n    <IsBootMenuEnabled>false</IsBootMenuEnabled>\n    <IsSpiceFileTransferEnabled>true</IsSpiceFileTransferEnabled>\n    <IsSpiceCopyPasteEnabled>true</IsSpiceCopyPasteEnabled>\n    <Name>VM_export</Name>\n    <TemplateId>00000000-0000-0000-0000-000000000000</TemplateId>\n    <TemplateName>Blank</TemplateName>\n    <IsInitilized>false</IsInitilized>\n    <Origin>3</Origin>\n    <DefaultDisplayType>1</DefaultDisplayType>\n    <TrustedService>false</TrustedService>\n    <OriginalTemplateId>00000000-0000-0000-0000-000000000000</OriginalTemplateId>\n    <OriginalTemplateName>Blank</OriginalTemplateName>\n    <UseLatestVersion>false</UseLatestVersion>\n    <Section ovf:id=\"70b4d9a7-4f73-4def-89ca-24fc5f60e01a\"\n      ovf:required=\"false\"\n      xsi:type=\"ovf:OperatingSystemSection_Type\">\n      <Info>Guest Operating System</Info>\n      <Description>other</Description>\n    </Section>\n    <Section xsi:type=\"ovf:VirtualHardwareSection_Type\">\n      <Info>1 CPU, 1024 Memory</Info>\n      <System>\n        <vssd:VirtualSystemType>ENGINE 3.5.0.0</vssd:VirtualSystemType>\n      </System>\n      <Item>\n        <rasd:Caption>1 virtual cpu</rasd:Caption>\n        <rasd:Description>Number of virtual CPU</rasd:Description>\n        <rasd:InstanceId>1</rasd:InstanceId>\n        <rasd:ResourceType>3</rasd:ResourceType>\n        <rasd:num_of_sockets>1</rasd:num_of_sockets>\n        <rasd:cpu_per_socket>1</rasd:cpu_per_socket>\n      </Item>\n      <Item>\n        <rasd:Caption>1024 MB of memory</rasd:Caption>\n        <rasd:Description>Memory Size</rasd:Description>\n        <rasd:InstanceId>2</rasd:InstanceId>\n        <rasd:ResourceType>4</rasd:ResourceType>\n        <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>\n        <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>\n      </Item>\n      <Item>\n        <rasd:Caption>USB Controller</rasd:Caption>\n        <rasd:InstanceId>3</rasd:InstanceId>\n        <rasd:ResourceType>23</rasd:ResourceType>\n        <rasd:UsbPolicy>DISABLED</rasd:UsbPolicy>\n      </Item>\n    </Section>\n  </Content>\n</ovf:Envelope>\n```\n"
+          },
+          "type": {
+            "description": "Тип документа (OVF/OVA)",
+            "$ref": "#/components/schemas/ConfigurationType"
+          }
+        }
+      },
+      "ConfigurationType": {
+        "type": "string",
+        "xml": {
+          "name": "configuration_type",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список допустимых форматов конфигурации для ВМ\n\n### Описание значений\n\n* **ova** - standard OVF. Предоставленная конфигурация виртуальной машины \nсоответствует стандарту Open Virtualization Format (OVF). Это значение следует \nиспользовать для конфигурации OVF, извлеченной из Open Virtual Appliance (OVA), \nсозданной oVirt или другими производителями. Спецификацию OVF см. [здесь](https://www.dmtf.org/standards/ovf).\n* **ovf** - oVirt-совместимый OVF. Предоставленная конфигурация виртуальной машины \nсоответствует oVirt-совместимой форме Open Virtualization Format (OVF). \nОбратите внимание, что oVirt-совместимая форма OVF может отличаться от \nстандарта OVF, используемого другими производителями. Это значение следует \nиспользовать для конфигурации OVF, взятой из домена хранения.\n",
+        "enum": [
+          "ova",
+          "ovf"
+        ]
+      },
+      "Console": {
+        "type": "object",
+        "description": "Тип, описывающий устройство последовательной консоли",
+        "xml": {
+          "name": "console",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Статус устройства последовательной консоли (включена/выключена).",
+            "example": true
+          }
+        }
+      },
+      "Core": {
+        "type": "object",
+        "description": "Тип, описывающий ядро процессора",
+        "xml": {
+          "name": "core",
+          "wrapped": false
+        },
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "example": 0
+          },
+          "socket": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          }
+        }
+      },
+      "Cpu": {
+        "type": "object",
+        "description": "Тип, описывающий ЦПУ",
+        "xml": {
+          "name": "cpu",
+          "wrapped": false
+        },
+        "properties": {
+          "architecture": {
+            "description": "Архитектура ЦПУ",
+            "$ref": "#/components/schemas/Architecture"
+          },
+          "cores": {
+            "description": "Список ядер и их параметры",
+            "xml": {
+              "name": "cores",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Core"
+            }
+          },
+          "cpu_tune": {
+            "$ref": "#/components/schemas/CpuTune"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/CpuMode"
+          },
+          "name": {
+            "type": "string",
+            "example": "Intel Xeon Processor (Icelake)"
+          },
+          "speed": {
+            "type": "number",
+            "example": 2200
+          },
+          "topology": {
+            "xml": {
+              "name": "topology"
+            },
+            "$ref": "#/components/schemas/CpuTopology"
+          },
+          "type": {
+            "type": "string",
+            "example": "Intel Westmere IBRS SSBD Family"
+          }
+        }
+      },
+      "CpuMode": {
+        "type": "string",
+        "xml": {
+          "name": "cpu_mode",
+          "wrapped": false
+        },
+        "enum": [
+          "custom",
+          "host_model",
+          "host_passthrough"
+        ]
+      },
+      "CpuProfile": {
+        "type": "object",
+        "description": "Тип, представляющий профиль CPU",
+        "xml": {
+          "name": "cpu_profile",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "cluster": {
+            "description": "Кластер, для которого определён профиль",
+            "$ref": "#/components/schemas/Cluster"
+          },
+          "permissions": {
+            "description": "Набор разрешений",
+            "type": "array",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "qos": {
+            "description": "Политика QoS, определённая для данного профиля",
+            "$ref": "#/components/schemas/Qos"
+          }
+        }
+      },
+      "CpuTopology": {
+        "type": "object",
+        "description": "Тип, описывающий топологию ЦПУ",
+        "xml": {
+          "name": "cpu_topology",
+          "wrapped": false
+        },
+        "properties": {
+          "cores": {
+            "description": "Количество ядер",
+            "type": "integer",
+            "example": 1
+          },
+          "sockets": {
+            "description": "Количество сокетов",
+            "type": "integer",
+            "example": 4
+          },
+          "threads": {
+            "description": "Количество потоков на ядро",
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "CpuTune": {
+        "type": "object",
+        "xml": {
+          "name": "cpu_tune",
+          "wrapped": false
+        },
+        "properties": {
+          "vcpu_pins": {
+            "xml": {
+              "name": "vcpu_pins",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VcpuPin"
+            }
+          }
+        }
+      },
+      "CpuType": {
+        "type": "object",
+        "xml": {
+          "name": "cpu_type",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий поддердиваемые типы ЦПУ",
+        "properties": {
+          "architecture": {
+            "description": "Архитектура ЦПУ",
+            "$ref": "#/components/schemas/Architecture"
+          },
+          "level": {
+            "type": "integer",
+            "description": "Уровень типа процессора."
+          },
+          "name": {
+            "type": "string",
+            "description": "Название типа процессора.",
+            "example": "Intel Nehalem Family"
+          }
+        }
+      },
+      "CreationStatus": {
+        "type": "string",
+        "xml": {
+          "name": "creation_status",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий возможные статусы создания объектов\n\n### Описание значений\n\n* **complete** - создание успешно завершено\n* **failed** - процесс создания завершился ошибкой\n* **in_progress** - создание в процессе\n* **pending** - в ожидании\n",
+        "enum": [
+          "complete",
+          "failed",
+          "in_progress",
+          "pending"
+        ]
+      },
+      "CustomProperty": {
+        "type": "object",
+        "xml": {
+          "name": "custo_property",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий пользовательское свойство",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Имя свойства"
+          },
+          "regexp": {
+            "type": "string",
+            "description": "Регулярное выражение, определяющее доступные значения, которые может получить пользовательское свойство."
+          },
+          "value": {
+            "type": "string",
+            "description": "Значение свойства"
+          }
+        }
+      },
+      "DataCenter": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "data-center"
+        },
+        "description": "Тип, описывающий центры данных",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "local": {
+            "type": "boolean",
+            "description": "Установлен ли для центра данных тип хранилища \"локальный\""
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "quota_mode": {
+            "xml": {
+              "name": "quota_mode"
+            },
+            "description": "Режим квотирования, установленный для центра данных",
+            "$ref": "#/components/schemas/QuotaModeType"
+          },
+          "status": {
+            "description": "Статус центра данных",
+            "$ref": "#/components/schemas/DataCenterStatus"
+          },
+          "storage_format": {
+            "description": "Формат доменов хранения",
+            "$ref": "#/components/schemas/StorageFormat"
+          },
+          "supported_versions": {
+            "description": "Поддерживаемые версии совместимости",
+            "type": "array",
+            "xml": {
+              "name": "supported_versions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Version"
+            }
+          },
+          "version": {
+            "description": "Версия совместимости.\n\nВсе кластеры в этом центре данных должны быть настроены как минимум \nна эту версию совместимости.\n\nПример запроса:\n\n```\nGET /ovirt-engine/api/datacenters/123\n```\n\nОтвет:\n\n```\n<data_center>\n  ...\n  <version>\n    <major>4</major>\n    <minor>0</minor>\n  </version>\n  ...\n</data_center>\n```\n\nДля обновления версии совместимости используйте:\n\n```\nPUT /ovirt-engine/api/datacenters/123\n```\n\nС телом запроса:\n\n```\n<data_center>\n  <version>\n    <major>4</major>\n    <minor>1</minor>\n  </version>\n</data_center>\n```\n",
+            "$ref": "#/components/schemas/Version"
+          },
+          "clusters": {
+            "type": "array",
+            "xml": {
+              "name": "clusters",
+              "wrapped": true
+            },
+            "description": "Список кластеров центра данных",
+            "items": {
+              "$ref": "#/components/schemas/Cluster"
+            }
+          },
+          "iscsi_bonds": {
+            "type": "array",
+            "xml": {
+              "name": "iscsi_bonds",
+              "wrapped": true
+            },
+            "description": "Список бондов iSCSI, используемых этим кластером",
+            "items": {
+              "$ref": "#/components/schemas/IscsiBond"
+            }
+          },
+          "mac_pool": {
+            "description": "Пул MAC-адресов, используемый в центре данных",
+            "$ref": "#/components/schemas/MacPool"
+          },
+          "networks": {
+            "description": "Список сетей, присоединённых к центру данных",
+            "type": "array",
+            "xml": {
+              "name": "networks",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            }
+          },
+          "permissions": {
+            "type": "array",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "description": "Список прав, заданных для этого центра данных",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "qoss": {
+            "type": "array",
+            "xml": {
+              "name": "qoss",
+              "wrapped": true
+            },
+            "description": "Список политик QoS, используемых в центре данных",
+            "items": {
+              "$ref": "#/components/schemas/Qos"
+            }
+          },
+          "quotas": {
+            "type": "array",
+            "xml": {
+              "name": "quotas",
+              "wrapped": true
+            },
+            "description": "Список квот, заданных для этого центра данных",
+            "items": {
+              "$ref": "#/components/schemas/Quota"
+            }
+          },
+          "storage_domains": {
+            "type": "array",
+            "xml": {
+              "name": "storage_domains",
+              "wrapped": true
+            },
+            "description": "Список доменов хранения, присоединённых к центру данных",
+            "items": {
+              "$ref": "#/components/schemas/StorageDomain"
+            }
+          }
+        }
+      },
+      "DataCenterStatus": {
+        "type": "string",
+        "description": "Тип, содержащий список возможных статусов центров данных.\n\n### Описание значений\n\n* **contend** - конкурирует\n* **maintenance** - режим обслуживания\n* **not_operational** - неработоспособен\n* **problematic** - проблемный (есть объекты с ошибками)\n* **uninitialized** - неинициализирован\n* **up** - включен (активен)\n",
+        "xml": {
+          "name": "status",
+          "wrapped": true
+        },
+        "example": "up",
+        "enum": [
+          "contend",
+          "maintenance",
+          "not_operational",
+          "problematic",
+          "uninitialized",
+          "up"
+        ]
+      },
+      "Device": {
+        "type": "object",
+        "description": "Тип, описывающий утройство",
+        "xml": {
+          "name": "device",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "instance_type": {
+            "description": "Опционально ссылается на тип экземпляра, для которого используется устройство.",
+            "$ref": "#/components/schemas/InstanceType"
+          },
+          "template": {
+            "description": "Опционально ссылается на шаблон, в котором используется устройство.",
+            "$ref": "#/components/schemas/Template"
+          },
+          "vms": {
+            "type": "array",
+            "xml": {
+              "name": "storage_domains",
+              "wrapped": true
+            },
+            "description": "Ссылки на виртуальные машины, использующие данное устройство.",
+            "items": {
+              "$ref": "#/components/schemas/Vm"
+            }
+          }
+        }
+      },
+      "Disk": {
+        "type": "object",
+        "xml": {
+          "name": "disk",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий виртуальный диск",
+        "properties": {
+          "actual_size": {
+            "type": "integer",
+            "description": "Фактический размер диска, в байтах.",
+            "example": 1073741824
+          },
+          "alias": {
+            "type": "string",
+            "description": "Псевдоним диска",
+            "example": "demo_Disk1"
+          },
+          "backup": {
+            "description": "Поддерживаемое диском поведение резервного копирования.",
+            "$ref": "#/components/schemas/DiskBackup"
+          },
+          "backup_mode": {
+            "description": "Тип резервного копирования, установленный для диска (полное/инкрементное).",
+            "$ref": "#/components/schemas/DiskBackupMode"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "content_type": {
+            "description": "Указывает на реальное содержимое, находящееся на диске.",
+            "$ref": "#/components/schemas/DiskContentType"
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "external_disk": {
+            "type": "string",
+            "description": "Используется для параметров внешнего диска\n\nВнешний диск может представлять собой путь к локальному файлу или блочному устройству, \nлибо URL, поддерживаемый QEMU, например:\n\n* nbd:<host>:<port>[:exportname=<export>]\n* nbd:unix:</path>[:exportname=<export>]\n* http://[<username>[:<password>]@]<host>/<path>\n* https://[<username>[:<password>]@]<host>/<path>\n* ftp://[<username>[:<password>]@]<host>/<path>\n* ftps://[<username>[:<password>]@]<host>/<path>\n\nДополнительные поддерживаемые протоколы и более подробную информацию см. в руководстве по QEMU.\n"
+          },
+          "format": {
+            "description": "Базовый формат хранения данных.",
+            "$ref": "#/components/schemas/DiskFormat"
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 56568766
+          },
+          "image_id": {
+            "type": "string",
+            "description": "Уникальный идентификатор образа",
+            "example": "0ab33a"
+          },
+          "initial_size": {
+            "type": "integer",
+            "description": "Начальный размер диска с динамическим образом, созданного на блочном хранилище, в байтах.",
+            "example": 1073741824
+          },
+          "lun_storage": {
+            "$ref": "#/components/schemas/HostStorage"
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста.",
+            "example": "demo-vm_Disk1"
+          },
+          "propagate_errors": {
+            "type": "boolean",
+            "description": "Указывает, должны ли ошибки на диске приводить к приостановке работы виртуальной машины или вместо этого они должны распространяться на гостевую операционную систему.",
+            "example": false
+          },
+          "provisioned_size": {
+            "type": "integer",
+            "description": "Виртуальный размер диска, в байтах.",
+            "example": 10737418240
+          },
+          "qcow_version": {
+            "description": "Базовая QCOW-версия тома QCOW.",
+            "$ref": "#/components/schemas/QcowVersion"
+          },
+          "sgio": {
+            "description": "Указывает, включен ли SCSI passthrough и какова его политика.",
+            "$ref": "#/components/schemas/ScsiGenericIO"
+          },
+          "shareable": {
+            "type": "boolean",
+            "description": "Указывает, является ли диск общим",
+            "example": false
+          },
+          "sparse": {
+            "type": "boolean",
+            "description": "Указывает является ли диск динамически расширяемым (тонким)",
+            "example": true
+          },
+          "status": {
+            "description": "Статус устройства диска",
+            "$ref": "#/components/schemas/DiskStatus"
+          },
+          "storage_type": {
+            "description": "Тип хранилища диска",
+            "$ref": "#/components/schemas/DiskStorageType"
+          },
+          "total_size": {
+            "type": "integer",
+            "description": "Общий размер диска, включая все его снимки, в байтах.",
+            "example": 10737418240
+          },
+          "wipe_after_delete": {
+            "type": "boolean",
+            "description": "Указывает, будут ли блоки диска считываться как нули после его удаления:\n\n* При блочном хранении данных диск обнуляется и только затем удаляется.\n* В файловом хранилище, поскольку файловая система уже гарантирует, что ранее \nудаленные блоки будут прочитаны как нули, диск будет удален немедленно.\n"
+          },
+          "disk_profile": {
+            "description": "Используемый профиль диска",
+            "$ref": "#/components/schemas/DiskProfile"
+          },
+          "disk_snapshots": {
+            "description": "Список снимков диска",
+            "type": "array",
+            "xml": {
+              "name": "disk_snapshots",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/DiskSnapshot"
+            }
+          },
+          "instance_type": {
+            "description": "Опционально ссылается на тип экземпляра, для которого используется устройство.",
+            "$ref": "#/components/schemas/InstanceType"
+          },
+          "openstack_volume_type": {
+            "description": "Параметры тома OpanStack",
+            "$ref": "#/components/schemas/OpenStackVolumeType"
+          },
+          "permissions": {
+            "description": "Права, назначенные диску",
+            "type": "array",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "quota": {
+            "description": "Квота, назначенная диску",
+            "$ref": "#/components/schemas/Quota"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/Snapshot"
+          },
+          "statistics": {
+            "description": "Статистика использования диска\n\nНапример:\n\n```\n<statistics>\n  <statistic href=\"/ovirt-engine/api/disks/123/statistics/456\" id=\"456\">\n    <name>data.current.read</name>\n    <description>Read data rate</description>\n    <kind>gauge</kind>\n    <type>decimal</type>\n    <unit>bytes_per_second</unit>\n    <values>\n      <value>\n        <datum>1052</datum>\n      </value>\n    </values>\n    <disk href=\"/ovirt-engine/api/disks/123\" id=\"123\"/>\n  </statistic>\n  ...\n</statistics>\n```\n\nНепосредственно при извлечении диска эта статистика не включается, только ссылка. \nДля получения статистики перейдите по указанной ссылке:\n\n```\nGET /ovirt-engine/api/disks/123/statistics\n```\n",
+            "type": "array",
+            "xml": {
+              "name": "statistics",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Statistic"
+            }
+          },
+          "storage_domains": {
+            "description": "Домены хранения, связанные с данным диском.\n\nТребуется только в том случае, если первый диск добавляется к виртуальной машине, \nкоторая сама не была создана на основе шаблона.\n",
+            "type": "array",
+            "xml": {
+              "name": "storage_domains",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/StorageDomain"
+            }
+          },
+          "template": {
+            "description": "Опционально ссылается на шаблон, в котором используется устройство.",
+            "$ref": "#/components/schemas/Template"
+          },
+          "vms": {
+            "description": "Ссылки на виртуальные машины, использующие данное устройство.",
+            "type": "array",
+            "xml": {
+              "name": "vms",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Vm"
+            }
+          }
+        }
+      },
+      "DiskAttachment": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "disk_attachment"
+        },
+        "description": "Тип, описывающий параметры дисков, подключенных к ВМ",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Указывает, является ли диск активным в виртуальной машине, к которой он подключен.\n\nДиск, прикреплённый к виртуальной машине и находящийся в активном состоянии, \nподключается к виртуальной машине во время выполнения и может использоваться.\n",
+            "example": true
+          },
+          "bootable": {
+            "type": "boolean",
+            "description": "Указывает, является ли диск загрузочным."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "interface": {
+            "description": "Тип интерфейсного драйвера, используемого для подключения дискового устройства к виртуальной машине.",
+            "$ref": "#/components/schemas/DiskInterface"
+          },
+          "logical_name": {
+            "type": "string",
+            "description": "Логическое имя диска виртуальной машины, как его видно изнутри виртуальной машины.\n\nЛогическое имя диска сообщается только в том случае, если внутри виртуальной \nмашины установлен и работает гостевой агент.\n\nНапример, если гостевой операционной системой является Linux, а диск подключен \nчерез интерфейс VirtIO, то логическое имя будет представлено как /dev/vda:\n\n```\n<disk_attachment>\n  ...\n  <logical_name>/dev/vda</logical_name>\n</disk_attachment>\n```\n\nЕсли гостевой операционной системой является Windows, то логическое имя будет \nпредставлено в виде `\\\\.\\PHYSICALDRIVE0`\n",
+            "example": "/dev/vda"
+          },
+          "pass_discard": {
+            "type": "boolean",
+            "description": "Указывает, передает ли виртуальная машина команды сброса (очистки) в хранилище.",
+            "example": false
+          },
+          "read_only": {
+            "type": "boolean",
+            "description": "Указывает, доступен ли диск только для чтения.\n\nПри добавлении нового диска значение по умолчанию равно `false`.\n"
+          },
+          "uses_scsi_reservation": {
+            "type": "boolean",
+            "description": "Указывает, использует ли диск резервирование scsi\n\nВиртуальные машины с включенной функцией VIRTIO-SCSI passthrough могут \nустанавливать постоянные SCSI-резервирования на дисках. Если они устанавливают \nпостоянные SCSI-резервирования, то эти виртуальные машины не могут быть \nперемещены на другой хост, поскольку они потеряют доступ к диску, так как \nSCSI-резервирования характерны для SCSI-инициаторов, а значит, и для хостов. \nЭтот сценарий не может быть автоматически обнаружен. Чтобы избежать миграции \nтаких виртуальных машин, пользователь может установить этот атрибут в true, \nчтобы указать, что виртуальная машина использует резервирование SCSI.\n",
+            "example": false
+          },
+          "disk": {
+            "description": "Ссылка на подключенный диск",
+            "$ref": "#/components/schemas/Disk"
+          },
+          "template": {
+            "description": "Ссылка на шаблон (при использовании в шаблоне)",
+            "$ref": "#/components/schemas/Template"
+          },
+          "vm": {
+            "description": "Ссылка на виртуальную машину с которой используется данное подключение",
+            "$ref": "#/components/schemas/Vm"
+          }
+        }
+      },
+      "DiskBackup": {
+        "type": "string",
+        "xml": {
+          "name": "backup",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список поддерживаемых механизмов резервного копирования для дисков\n\n### Описание значений\n\n* **incremental** - поддержка инкрементного резервного копирования\n* **none** - резервное копирование не поддерживается\n",
+        "enum": [
+          "incremental",
+          "none"
+        ],
+        "example": "incremental"
+      },
+      "DiskBackupMode": {
+        "type": "string",
+        "xml": {
+          "name": "disk_backup_mode",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список доступных режимов резервного копирования для дисков.\n\n### Описание значений\n\n* **full** - Этот диск поддерживает полное резервное копирование.\nМожно запросить нулевые экстенты и загрузить все данные диска.\n* **incremental** - Этот диск поддерживает инкрементное резервное копирование. \nМожно запросить грязные экстенты и загрузить измененные блоки.\n",
+        "enum": [
+          "full",
+          "incremental"
+        ],
+        "example": "incremental"
+      },
+      "DiskContentType": {
+        "type": "string",
+        "xml": {
+          "name": "content_type",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список возможных типов содержимого дисков\n\n### Описание значений\n\n* **backup_scratch** - Диск содержит защищенные данные резервного копирования ВМ.\n* **data** - Диск содержит обычные данные.\n* **hosted_engine** - Диск является диском ВМ Hosted Engine.\n* **hosted_engine_configuration** - Диск является диском с конфигурацией Hosted Engine.\n* **hosted_engine_metadata** - Диск является диском метаданных Hosted Engine.\n* **hosted_engine_sanlock** - Диск является диском Hosted Engine Sanlock.\n* **iso** - Диск содержит ISO-образ для использования в качестве устройства CDROM.\n* **memory_dump_volume** - На диске находится дамп памяти из \"живого\" снимка.\n* **memory_metadata_volume** - Диск содержит метаданные памяти из \"живого\" снимка.\n* **ovf_store** - Диск представляет собой хранилище OVF.\n",
+        "enum": [
+          "backup_scratch",
+          "data",
+          "hosted_engine",
+          "hosted_engine_configuration",
+          "hosted_engine_metadata",
+          "hosted_engine_sanlock",
+          "iso",
+          "memory_dump_volume",
+          "memory_metadata_volume",
+          "ovf_store"
+        ],
+        "example": "data"
+      },
+      "DiskFormat": {
+        "type": "string",
+        "xml": {
+          "name": "format",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список допустимых форматов дисков\n\n### Описание значений\n\n* **cow** - Формат _Copy On Write_ позволяет делать моментальные снимки с небольшим перерасходом производительности.\n* **raw** - Формат raw не позволяет делать снимки, но обеспечивает более высокую производительность.\n",
+        "enum": [
+          "cow",
+          "raw"
+        ],
+        "example": "cow"
+      },
+      "DiskInterface": {
+        "type": "string",
+        "xml": {
+          "name": "interface",
+          "wrapped": false
+        },
+        "description": "Тип содержащий список допустимых интерфейсов подключения дисков\n\n### Описание значений\n\n* **ide** - Устаревшее устройство контроллера. Работает практически со всеми \nгостевыми операционными системами, что обеспечивает хорошую совместимость. \nПроизводительность ниже, чем у других альтернатив.\n* **sata** - Устройство контроллера SATA.\n* **spapr_vscsi** - Паравиртуализированное устройство, поддерживаемое машинами \nсемейства IBM pSeries и использующее протокол SCSI.\n* **virtio** - Интерфейс виртуализации, при котором только драйвер \nустройства гостевой ОС знает, что он работает в виртуальной среде. \nПозволяет гостевым ОС получить высокую производительность дисковых операций.\n* **virtio_scsi** - Паравиртуализированное устройство SCSI-контроллера. Быстрый интерфейс с \nгостевой ОС через прямое обращение к физическому устройству хранения данных по \nпротоколу SCSI.\n",
+        "enum": [
+          "ide",
+          "sata",
+          "spapr_vscsi",
+          "virtio",
+          "virtio_scsi"
+        ],
+        "example": "virtio"
+      },
+      "DiskProfile": {
+        "type": "object",
+        "xml": {
+          "name": "disk_profile",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий профиль диска",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "permissions": {
+            "description": "Разрешения, назначенные профилю",
+            "type": "array",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "qos": {
+            "description": "Политика QoS, назначенная профилю",
+            "$ref": "#/components/schemas/Qos"
+          },
+          "storage_domain": {
+            "description": "Домен хранения с которым связан профиль",
+            "$ref": "#/components/schemas/StorageDomain"
+          }
+        }
+      },
+      "DiskSnapshot": {
+        "type": "object",
+        "description": "Тип, описывающий снимок диска",
+        "xml": {
+          "name": "disk_snapshot",
+          "wrapped": false
+        },
+        "properties": {
+          "actual_size": {
+            "type": "integer",
+            "description": "Фактический размер диска, в байтах.",
+            "example": 1073741824
+          },
+          "alias": {
+            "type": "string",
+            "description": "Псевдоним диска",
+            "example": "demo_Disk1"
+          },
+          "backup": {
+            "description": "Поддерживаемое диском поведение резервного копирования.",
+            "$ref": "#/components/schemas/DiskBackup"
+          },
+          "backup_mode": {
+            "description": "Тип резервного копирования, установленный для диска (полное/инкрементное).",
+            "$ref": "#/components/schemas/DiskBackupMode"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "content_type": {
+            "description": "Указывает на реальное содержимое, находящееся на диске.",
+            "$ref": "#/components/schemas/DiskContentType"
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "external_disk": {
+            "type": "string",
+            "description": "Используется для параметров внешнего диска\n\nВнешний диск может представлять собой путь к локальному файлу или блочному устройству, \nлибо URL, поддерживаемый QEMU, например:\n\n* nbd:<host>:<port>[:exportname=<export>]\n* nbd:unix:</path>[:exportname=<export>]\n* http://[<username>[:<password>]@]<host>/<path>\n* https://[<username>[:<password>]@]<host>/<path>\n* ftp://[<username>[:<password>]@]<host>/<path>\n* ftps://[<username>[:<password>]@]<host>/<path>\n\nДополнительные поддерживаемые протоколы и более подробную информацию см. в руководстве по QEMU.\n"
+          },
+          "format": {
+            "description": "Базовый формат хранения данных.",
+            "$ref": "#/components/schemas/DiskFormat"
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 56568766
+          },
+          "initial_size": {
+            "type": "integer",
+            "description": "Начальный размер диска с динамическим образом, созданного на блочном хранилище, в байтах.",
+            "example": 1073741824
+          },
+          "lun_storage": {
+            "$ref": "#/components/schemas/HostStorage"
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста.",
+            "example": "demo-vm_Disk1"
+          },
+          "propagate_errors": {
+            "type": "boolean",
+            "description": "Указывает, должны ли ошибки на диске приводить к приостановке работы виртуальной машины или вместо этого они должны распространяться на гостевую операционную систему.",
+            "example": false
+          },
+          "provisioned_size": {
+            "type": "integer",
+            "description": "Виртуальный размер диска, в байтах.",
+            "example": 10737418240
+          },
+          "qcow_version": {
+            "description": "Базовая QCOW-версия тома QCOW.",
+            "$ref": "#/components/schemas/QcowVersion"
+          },
+          "sgio": {
+            "description": "Указывает, включен ли SCSI passthrough и какова его политика.",
+            "$ref": "#/components/schemas/ScsiGenericIO"
+          },
+          "shareable": {
+            "type": "boolean",
+            "description": "Указывает, является ли диск общим",
+            "example": false
+          },
+          "sparse": {
+            "type": "boolean",
+            "description": "Указывает является ли диск динамически расширяемым (тонким)",
+            "example": true
+          },
+          "status": {
+            "description": "Статус устройства диска",
+            "$ref": "#/components/schemas/DiskStatus"
+          },
+          "storage_type": {
+            "description": "Тип хранилища диска",
+            "$ref": "#/components/schemas/DiskStorageType"
+          },
+          "total_size": {
+            "type": "integer",
+            "description": "Общий размер диска, включая все его снимки, в байтах.",
+            "example": 10737418240
+          },
+          "wipe_after_delete": {
+            "type": "boolean",
+            "description": "Указывает, будут ли блоки диска считываться как нули после его удаления:\n\n* При блочном хранении данных диск обнуляется и только затем удаляется.\n* В файловом хранилище, поскольку файловая система уже гарантирует, что ранее \nудаленные блоки будут прочитаны как нули, диск будет удален немедленно.\n"
+          },
+          "disk": {
+            "description": "Диск, с которым связан этот снимок",
+            "$ref": "#/components/schemas/Disk"
+          },
+          "disk_profile": {
+            "description": "Используемый профиль диска",
+            "$ref": "#/components/schemas/DiskProfile"
+          },
+          "instance_type": {
+            "description": "Опционально ссылается на тип экземпляра, для которого используется устройство.",
+            "$ref": "#/components/schemas/InstanceType"
+          },
+          "openstack_volume_type": {
+            "description": "Параметры тома OpanStack",
+            "$ref": "#/components/schemas/OpenStackVolumeType"
+          },
+          "parent": {
+            "description": "Родительский снимок диска",
+            "$ref": "#/components/schemas/DiskSnapshot"
+          },
+          "permissions": {
+            "description": "Права, назначенные диску",
+            "type": "array",
+            "xml": {
+              "name": "permissions",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "quota": {
+            "description": "Квота, назначенная диску",
+            "$ref": "#/components/schemas/Quota"
+          },
+          "snapshot": {
+            "description": "Снимок ВМ, с которым связан данный снимок диска",
+            "$ref": "#/components/schemas/Snapshot"
+          },
+          "statistics": {
+            "description": "Статистика использования диска\n\nНапример:\n\n```\n<statistics>\n  <statistic href=\"/ovirt-engine/api/disks/123/statistics/456\" id=\"456\">\n    <name>data.current.read</name>\n    <description>Read data rate</description>\n    <kind>gauge</kind>\n    <type>decimal</type>\n    <unit>bytes_per_second</unit>\n    <values>\n      <value>\n        <datum>1052</datum>\n      </value>\n    </values>\n    <disk href=\"/ovirt-engine/api/disks/123\" id=\"123\"/>\n  </statistic>\n  ...\n</statistics>\n```\n\nНепосредственно при извлечении диска эта статистика не включается, только ссылка. \nДля получения статистики перейдите по указанной ссылке:\n\n```\nGET /ovirt-engine/api/disks/123/statistics\n```\n",
+            "type": "array",
+            "xml": {
+              "name": "statistics",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Statistic"
+            }
+          },
+          "storage_domains": {
+            "description": "Домены хранения, связанные с данным диском.\n\nТребуется только в том случае, если первый диск добавляется к виртуальной машине, \nкоторая сама не была создана на основе шаблона.\n",
+            "type": "array",
+            "xml": {
+              "name": "storage_domains",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/StorageDomain"
+            }
+          },
+          "template": {
+            "description": "Опционально ссылается на шаблон, в котором используется устройство.",
+            "$ref": "#/components/schemas/Template"
+          },
+          "vms": {
+            "description": "Ссылки на виртуальные машины, использующие данное устройство.",
+            "type": "array",
+            "xml": {
+              "name": "vms",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Vm"
+            }
+          }
+        }
+      },
+      "DiskStatus": {
+        "type": "string",
+        "description": "Тип, описывающий возможные статусы дисков\n\n### Описание значений\n\n* **illegal** - Диск не может быть доступен виртуальной машине, и \nпользователю необходимо предпринять действия для решения проблемы.\n* **locked** - Диск используется системой, поэтому в данный момент доступ к нему \nвиртуальных машин невозможен. Обычно это временное состояние, пока диск не будет освобожден.\n* **ok** - Состояние диска нормальное, доступ к нему виртуальной машине возможен.\n",
+        "enum": [
+          "illegal",
+          "locked",
+          "ok"
+        ],
+        "example": "ok"
+      },
+      "DiskStorageType": {
+        "type": "string",
+        "description": "Тип, содержащий перечень доступных типов дисков\n\n### Описание значений\n\n* **cinder** - в качестве диска используется том Cinder. Требует\nдоступа к экземпляру тома Openstack Cinder\n* **image** - стандартный тип диска. Представляет собой файл (при хранении в файловых хранилищах) или \nлогический том (при хранении в блочных хранилищах)\n* **lun** - диск типа Direct LUN. В качестве диска используется блочное устройство\n* **managed_block_storage** - Тип диска, используемый для домена хранения, созданного с помощью драйвера cinderlib.\n",
+        "xml": {
+          "name": "storage_type",
+          "wrapped": false
+        },
+        "enum": [
+          "cinder",
+          "image",
+          "lun",
+          "managed_block_storage"
+        ],
+        "example": "image"
+      },
+      "DiskType": {
+        "type": "string",
+        "xml": {
+          "name": "disk_type"
+        },
+        "description": "Тип диска.\n\n### Описание значений\n\n* **data** - диск данных\n* **system** - системный диск\n",
+        "enum": [
+          "data",
+          "system"
+        ],
+        "example": "data"
+      },
+      "Display": {
+        "type": "object",
+        "description": "Представляет конфигурацию графической консоли.",
+        "xml": {
+          "name": "display",
+          "wrapped": false
+        },
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "IP-адрес гостевой ОС, к которому необходимо подключить клиент графической консоли."
+          },
+          "allow_override": {
+            "type": "boolean",
+            "description": "Указывает, нужно ли переопределять адрес отображения для каждого хоста. \nАктуально только для атрибута Host.display. Если установлено, то адрес \nграфической консоли виртуальной машины будет переопределяться адресом дисплея, \nуказанным хостом. Если не установлено, то адрес графической консоли виртуальной \nмашины переопределяться не будет.\n"
+          },
+          "certificate": {
+            "description": "Сертификат TLS в случае TLS-соединения. Если TLS не включен, то сообщение не будет передано.",
+            "$ref": "#/components/schemas/Certificate"
+          },
+          "copy_paste_enabled": {
+            "type": "boolean",
+            "description": "Указывает, может ли пользователь копировать и вставлять содержимое с внешнего \nузла в графическую консоль.\n\nЭта опция доступна только для типа консоли SPICE.\n"
+          },
+          "disconnect_action": {
+            "type": "string",
+            "description": "Возвращает действие, которое будет происходить при отключении графической \nконсоли. Возможны следующие варианты:\n\n* **none** - Никаких действий не производится.\n* **lock_screen** - Блокирует активный в данный момент сеанс пользователя.\n* **logout** - Выход из активного сеанса пользователя.\n* **reboot** - Инициирует плавную перезагрузку виртуальной машины.\n* **shutdown** - Инициирует плавное выключение виртуальной машины.\n\nДанная опция доступна только для типа консоли SPICE.\n"
+          },
+          "file_transfer_enabled": {
+            "type": "boolean",
+            "description": "Указывает, может ли пользователь перетаскивать файлы с внешнего хоста в \nграфическую консоль. \n\nДанная опция доступна только для типа консоли SPICE.\n"
+          },
+          "keyboard_layout": {
+            "type": "string",
+            "description": "Раскладка клавиатуры, используемая с данной графической консолью. Эта опция доступна только для типа консоли VNC."
+          },
+          "monitors": {
+            "type": "integer",
+            "description": "Количество мониторов, открытых для данной графической консоли.\n\nЭта опция доступна только для типа консоли SPICE. Возможные значения: 1, 2 или 4.\n"
+          },
+          "port": {
+            "type": "integer",
+            "description": "Адрес порта на гостевом компьютере для подключения клиента графической консоли."
+          },
+          "proxy": {
+            "type": "string",
+            "description": "IP-адрес прокси-сервера, который будет использоваться клиентом графической \nконсоли для подключения к гостевой ОС.\n\nПрокси удобен, когда клиент находится за пределами гостевой сети. Эта опция \nдоступна только для типа консоли SPICE. \n\nПрокси может быть установлен в глобальной конфигурации, на уровне кластера, \nна уровне пула виртуальных машин или отключен для каждой виртуальной машины. \nЕсли прокси установлен в любом из указанных мест и не отключен для виртуальной \nмашины, то он будет возвращен этим методом. Если прокси не установлен, то ничего\nответ на запрос ничего не вернёт.\n"
+          },
+          "secure_port": {
+            "type": "integer",
+            "description": "Адрес защищенного порта на гостевой стороне в случае использования TLS для подключения клиента графической консоли."
+          },
+          "smartcard_enabled": {
+            "type": "boolean",
+            "description": "Указывает, следует ли использовать аутентификацию по смарт-карте."
+          },
+          "type": {
+            "description": "Тип протокола графической консоли.",
+            "$ref": "#/components/schemas/DisplayType"
+          }
+        }
+      },
+      "DisplayType": {
+        "xml": {
+          "name": "display_type",
+          "wrapped": false
+        },
+        "type": "string",
+        "description": "Представляет набор протоколов, используемых для подключения к графической консоли виртуальной машины.",
+        "enum": [
+          "vnc",
+          "spice"
+        ]
+      },
+      "Dns": {
+        "description": "Тип, описывающий dns-резолвер",
+        "type": "object",
+        "xml": {
+          "name": "dns",
+          "wrapped": false
+        },
+        "properties": {
+          "search_domains": {
+            "description": "Список хостов, выступающих в качестве поисковых доменов.",
+            "xml": {
+              "name": "search_domains",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Host"
+            }
+          },
+          "servers": {
+            "description": "Список хостов, выступающих в качестве DNS-серверов.",
+            "xml": {
+              "name": "servers",
+              "wrapped": true
+            },
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Host"
+            }
+          }
+        }
+      },
+      "DnsResolverConfiguration": {
+        "description": "Тип, описывающий конфигурацию dns-резолвера",
+        "type": "object",
+        "xml": {
+          "name": "dns_resolver_configuration",
+          "wrapped": false
+        },
+        "properties": {
+          "name_servers": {
+            "type": "array",
+            "description": "Список адресов серверов имен. Могут быть указаны как IPv4, так и IPv6-адреса.",
+            "xml": {
+              "name": "name_servers",
+              "wrapped": true
+            },
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Domain": {
+        "description": "Тип, описывающий домен службы каталогов",
+        "type": "object",
+        "xml": {
+          "name": "domain",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор."
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "user": {
+            "description": "Пользователь, имеющий административные права на домен",
+            "$ref": "#/components/schemas/User"
+          },
+          "groups": {
+            "description": "Список всех групп, обнаруженных на сервере каталогов",
+            "type": "array",
+            "xml": {
+              "name": "groups",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            }
+          },
+          "users": {
+            "description": "Список всех пользователей, обнаруженных на сервере каталогов",
+            "type": "array",
+            "xml": {
+              "name": "users",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "EntityExternalStatus": {
+        "description": "Тип, содержащий возможные статусы внешних сущностей.\n\n### Описание значений\n\n* **error** - внешний объект имеет статус \"ошибка\"\n* **failure** - внешний объект имеет проблему, которая приводит к сбоям.\n* **info** - внешний объект в нормальном состоянии, но имеет некоторую информацию, которая может быть полезной.\n* **ok** - внешний объект в нормальном состоянии\n* **warning** - внешний объект в нормальном состоянии, но есть проблема, которая может потребовать внимания.\n",
+        "type": "string",
+        "xml": {
+          "name": "status",
+          "wrapped": false
+        },
+        "enum": [
+          "error",
+          "failure",
+          "info",
+          "ok",
+          "warning"
+        ],
+        "example": "ok"
+      },
+      "EntityProfileDetail": {
+        "description": "Тип, описывающий параметры профилей сущностей",
+        "type": "object",
+        "xml": {
+          "name": "entity_profile_detail",
+          "wrapped": false
+        },
+        "properties": {
+          "profile_details": {
+            "type": "array",
+            "description": "Список параметров профилей",
+            "xml": {
+              "name": "profile_details",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ProfileDetail"
+            }
+          }
+        }
+      },
+      "ErrorHandling": {
+        "type": "object",
+        "description": "Представляет обработчик ошибок",
+        "xml": {
+          "name": "error_handling",
+          "wrapped": false
+        },
+        "properties": {
+          "on_error": {
+            "xml": {
+              "name": "on_error"
+            },
+            "description": "Запуск миграции при ошибке",
+            "$ref": "#/components/schemas/MigrateOnError"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "description": "Тип, описывающий событие в системе",
+        "xml": {
+          "name": "event",
+          "wrapped": false
+        },
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Код события",
+            "example": 885
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "correlation_id": {
+            "type": "string",
+            "description": "Идентификатор корреляции события.\n\nИспользуется для корреляции нескольких событий между собой.\n",
+            "example": "1a225bed"
+          },
+          "custom_data": {
+            "type": "string",
+            "description": "Свободный текст, представляющий пользовательские данные о событии."
+          },
+          "custom_id": {
+            "type": "string",
+            "description": "Пользовательский идентификатор события.",
+            "example": -1
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста.",
+            "example": "Check for available updates on host he-host-3.test-env.local was completed \nsuccessfully with message 'no updates found.'.\n"
+          },
+          "flood_rate": {
+            "type": "integer",
+            "description": "Определяет частоту рассылки уведомлений о событии.\n\nПозволяет предотвратить переполнение сети в случае, если событие появилось более одного раза за \nопределенный промежуток времени. По умолчанию - 30 секунд.\n"
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 1152
+          },
+          "index": {
+            "type": "integer",
+            "description": "Числовой индекс данного события.\n\nИндексы событий всегда возрастают, поэтому события с более высокими индексами гарантированно будут \nстарше событий с более низкими индексами.\n\nВ текущей реализации атрибут `id` имеет то же значение, что и этот атрибут \n`index`. Это деталь реализации, на которую пользователь API не должен \nполагаться. В будущем атрибут id может быть изменен на произвольную строку, \nсодержащую нечисловые символы и не имеющую неявного порядка. С другой стороны, \nатрибут `index` гарантированно останется целочисленным и упорядоченным.\n",
+            "example": 1152
+          },
+          "log_on_host": {
+            "type": "boolean",
+            "description": "Указывает, должно ли событие также записываться в журнал хоста/хостов. Если хост не \nуказан, то описание события будет записано на все хосты. По умолчанию значение \nfalse.\n",
+            "example": true
+          },
+          "origin": {
+            "type": "string",
+            "description": "Свободный текст, определяющий происхождение события.",
+            "example": "oVirt"
+          },
+          "severity": {
+            "description": "Серьезность события.",
+            "$ref": "#/components/schemas/LogSeverity"
+          },
+          "time": {
+            "description": "Время возникновения события",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-10-12T13:03:17.642Z"
+          },
+          "cluster": {
+            "description": "Ссылка на кластер если событие связано с кластером.",
+            "$ref": "#/components/schemas/Cluster"
+          },
+          "data_center": {
+            "description": "Ссылка на центр данных если событие связано с центром данных.",
+            "$ref": "#/components/schemas/DataCenter"
+          },
+          "host": {
+            "description": "Ссылка на хост если событие связано с хостом.",
+            "$ref": "#/components/schemas/Host"
+          },
+          "storage_domain": {
+            "description": "Ссылка на службу домена хранения если событие связано с доменом хранения.",
+            "$ref": "#/components/schemas/StorageDomain"
+          },
+          "template": {
+            "description": "Ссылка на шаблон если событие связано с шаблоном.",
+            "$ref": "#/components/schemas/Template"
+          },
+          "user": {
+            "description": "Ссылка на пользователя если событие связано с пользователем.",
+            "$ref": "#/components/schemas/User"
+          },
+          "vm": {
+            "description": "Ссылка на ВМ если событие связано с ВМ.",
+            "$ref": "#/components/schemas/Vm"
+          }
+        }
+      },
+      "EventSubscription": {
+        "type": "object",
+        "description": "Тип, описывающий параметры подписки на уведомления",
+        "xml": {
+          "name": "event_subscription",
+          "wrapped": false
+        },
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Адрес электронной почты, на который должны отправляться уведомления.\n\nЕсли этот адрес не указан, то уведомления отправляются на электронную почту \nпользователя. В настоящее время поддерживается только один адрес для каждого \nпользователя. Если добавляется подписка с адресом электронной почты, отличным \nот существующих, то возвращается статус **409 (CONFLICT)** с пояснением, что \nуказанный адрес противоречит существующему адресу подписки на события для \nданного пользователя.\n\nВ будущем это поле может быть упразднено, и уведомления всегда будут \nотправляться на адрес электронной почты пользователя.\n"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "event": {
+            "description": "Подписанное событие.\n\nВ сочетании с пользователем уникально идентифицирует событие-подписку.\n",
+            "$ref": "#/components/schemas/NotifiableEvent"
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 656548
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "notification_method": {
+            "description": "Метод уведомления: SMTP или SNMP.\n\nВ настоящее время API поддерживает только SMTP. Поддержка SNMP будет добавлена в будущем.\n",
+            "$ref": "#/components/schemas/NotificationMethod"
+          },
+          "user": {
+            "description": "Пользователь, подписавшийся на рассылку.\n\nВ сочетании с именем события уникально идентифицирует событие-подписку.\n",
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "ExternalComputeResource": {
+        "type": "object",
+        "description": "Тип, описывающий внешние вычислительные ресурсы",
+        "xml": {
+          "name": "external_compute_resource",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 994887
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Провайдер, предоставляющий ресурсы"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL доступа"
+          },
+          "user": {
+            "type": "string",
+            "description": "Пользователь, используемый для подключения"
+          },
+          "external_host_provider": {
+            "description": "Внешний провайдер хостов",
+            "$ref": "#/components/schemas/ExternalHostProvider"
+          }
+        }
+      },
+      "ExternalDiscoveredHost": {
+        "type": "object",
+        "description": "Тип описывающий параметры обнаруженных внешних хостов",
+        "xml": {
+          "name": "external_discovered_host",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 664785
+          },
+          "ip": {
+            "type": "string",
+            "description": "IP-адрес обнаруженного хоста"
+          },
+          "last_report": {
+            "type": "string",
+            "description": "Последний отчет от обнаруженного хоста"
+          },
+          "mac": {
+            "type": "string",
+            "description": "MAC-адрес обнаруженного хоста"
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "subnet_name": {
+            "type": "string",
+            "description": "Имя подсети, в которой находится обнаруженный хост"
+          },
+          "external_host_provider": {
+            "description": "Внешний провайдер хостов",
+            "$ref": "#/components/schemas/ExternalHostProvider"
+          }
+        }
+      },
+      "ExternalHost": {
+        "type": "object",
+        "description": "Тип, описывающий параметры хоста, предоставленного провайдером хостов (например, Foreman/Satellite).\n",
+        "xml": {
+          "name": "external_host",
+          "wrapped": false
+        },
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Адрес хоста. Может быть указан как IP, так и FQDN",
+            "example": "exthost.example.com"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 645576
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "external_host_provider": {
+            "description": "Внешний провайдер хостов",
+            "$ref": "#/components/schemas/ExternalHostProvider"
+          }
+        }
+      },
+      "ExternalHostGroup": {
+        "type": "object",
+        "description": "тип. описывающий параметры группы внешних хостов",
+        "xml": {
+          "name": "external_host_group",
+          "wrapped": false
+        },
+        "properties": {
+          "architecture_name": {
+            "type": "string",
+            "description": "Наименование архитектуры"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "domain_name": {
+            "type": "string",
+            "description": "Имя домена"
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 645576
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "operating_system_name": {
+            "type": "string",
+            "description": "Наименование ОС"
+          },
+          "subnet_name": {
+            "type": "string",
+            "description": "Имя подсети"
+          },
+          "external_host_provider": {
+            "description": "Внешний провайдер хостов",
+            "$ref": "#/components/schemas/ExternalHostProvider"
+          }
+        }
+      },
+      "ExternalHostProvider": {
+        "type": "object",
+        "description": "Тип, описывающий параметры внешнего провайдера хостов",
+        "xml": {
+          "name": "external_host_provider",
+          "wrapped": false
+        },
+        "properties": {
+          "authentication_url": {
+            "type": "string",
+            "description": "Определяет URL-адрес аутентификации внешнего провайдера."
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 645576
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "password": {
+            "type": "string",
+            "description": "Определяет пароль для пользователя в процессе аутентификации.",
+            "example": 123
+          },
+          "properties": {
+            "description": "Список имен/значений свойств провайдера.",
+            "type": "array",
+            "xml": {
+              "name": "properties",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Property"
+            }
+          },
+          "requires_authentication": {
+            "type": "boolean",
+            "description": "Определяет, требуется аутентификация на провайдере или нет.\n\nЕсли аутентификация требуется, то будут использоваться оба \nатрибута - имя пользователя и пароль.\n",
+            "example": true
+          },
+          "url": {
+            "type": "string",
+            "description": "Определяет URL-адрес внешнего провайдера."
+          },
+          "username": {
+            "type": "string",
+            "description": "Определяет имя пользователя, которое будет использоваться в процессе аутентификации.",
+            "example": "admin"
+          },
+          "certificates": {
+            "description": "Список сертификатов, используемых с провайдером.",
+            "type": "array",
+            "xml": {
+              "name": "certificates",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Certificate"
+            }
+          },
+          "compute_resources": {
+            "description": "Список вычислительных ресурсов, предоставляемых хост-провайдером.",
+            "type": "array",
+            "xml": {
+              "name": "compute_resources",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExternalComputeResource"
+            }
+          },
+          "discovered_hosts": {
+            "description": "Список хостов, обнаруженных в провайдере.\n\nОбнаруженные хосты - это хосты, которые еще не были инициализированы.\n",
+            "type": "array",
+            "xml": {
+              "name": "discovered_hosts",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExternalDiscoveredHost"
+            }
+          },
+          "host_groups": {
+            "description": "Список групп хостов на провайдере.\n\nГруппа хостов содержит различные свойства, которые провайдер применяет ко всем \nхостам, входящим в эту группу. Например, установленное программное обеспечение, \nсистемные определения, пароли и т.д.\n",
+            "type": "array",
+            "xml": {
+              "name": "host_groups",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExternalHostGroup"
+            }
+          },
+          "hosts": {
+            "description": "Список хостов, предоставленных провайдером.",
+            "type": "array",
+            "xml": {
+              "name": "host_groups",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExternalHost"
+            }
+          }
+        }
+      },
+      "ExternalNetworkProviderConfiguration": {
+        "type": "object",
+        "description": "Тип, описывающий параметры конфигурации внешнего провайдера сетей",
+        "xml": {
+          "name": "external_network_provider_configuration",
+          "wrapped": false
+        },
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "xml": {
+              "attribute": true
+            },
+            "example": 645576
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста."
+          },
+          "external_network_provider": {
+            "description": "Ссылка на внешнего провайдера",
+            "$ref": "#/components/schemas/Host"
+          },
+          "host": {
+            "description": "Ссылка на хост",
+            "$ref": "#/components/schemas/Host"
+          }
+        }
+      },
+      "ExternalProvider": {
+        "type": "object",
+        "xml": {
+          "name": "external_provider",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий внешнего провайдера"
+      },
+      "FencingPolicy": {
+        "type": "object",
+        "xml": {
+          "name": "fencing_policy",
+          "wrapped": false
+        },
+        "description": "Тип, представляющий политику изоляции кластера.",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Включение или отключение изоляции в данном кластере.",
+            "example": true
+          },
+          "skip_if_connectivity_broken": {
+            "description": "Если эта опция включена, то хост не будет изолирован, если более чем настраиваемый процент хостов в кластере также потерял соединение.\n\nЕсли эта опция включена, то мы не будем ограждать хост, если более чем настраиваемый процент хостов в кластере также потерял соединение. Это делается для того, чтобы предотвратить изоляционный шторм в случаях, когда в кластере существует глобальная сетевая проблема.\n",
+            "$ref": "#/components/schemas/SkipIfConnectivityBroken"
+          },
+          "skip_if_gluster_bricks_up": {
+            "description": "Флаг, указывающий, следует ли пропускать изоляцию, если на изолируемом хосте запущены брики Gluster.",
+            "type": "boolean",
+            "example": true
+          },
+          "skip_if_gluster_quorum_not_met": {
+            "type": "boolean",
+            "description": "Флаг, указывающий, следует ли пропускать изоляцию, если брики Gluster работают и кворум Gluster не будет достигнут без них.\n\nЭтот флаг является необязательным, и по умолчанию его значение равно false.\n"
+          },
+          "skip_if_sd_active": {
+            "description": "Если эта опция включена, то хост не будет изолирован, если он сохраняет аренду в хранилище.",
+            "$ref": "#/components/schemas/SkipIfSdActive"
+          }
+        }
+      },
+      "File": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "file"
+        }
+      },
+      "FipsMode": {
+        "type": "string",
+        "xml": {
+          "name": "fips_mode",
+          "wrapped": false
+        },
+        "description": "Представляет режим FIPS кластера.\n\n### Описание значений\n\n* **disabled** - Режим FIPS отключен.\n* **enabled** - Режим FIPS включен.\n* **undefined** - Режим FIPS пока не определён.\n",
+        "enum": [
+          "disabled",
+          "enabled",
+          "undefined"
+        ],
+        "example": "disabled"
+      },
+      "FirewallType": {
+        "type": "string",
+        "xml": {
+          "name": "firewall_type",
+          "wrapped": false
+        },
+        "description": "Описывает все типы межсетевых экранов, поддерживаемые системой.",
+        "enum": [
+          "firewalld",
+          "iptables"
+        ],
+        "example": "firewalld"
+      },
+      "GlusterBrick": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "gluster_brick"
+        }
+      },
+      "GlusterHook": {
+        "type": "object",
+        "xml": {
+          "name": "gluster_hook",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий хук Gluster"
+      },
+      "GlusterVolume": {
+        "type": "object",
+        "xml": {
+          "name": "gluster_volume",
+          "wrapped": false
+        }
+      },
+      "GlusterVolumeProfileDetails": {
+        "type": "object"
+      },
+      "Group": {
+        "type": "object",
+        "description": "Тип, описывающий группы, обнаруженные на сервере каталогов",
+        "xml": {
+          "name": "group",
+          "wrapped": false
+        }
+      },
+      "Host": {
+        "type": "object",
+        "xml": {
+          "name": "host"
+        },
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Адрес хоста (FQDN/IP).",
+            "example": "192.168.10.10"
+          },
+          "auto_numa_status": {
+            "description": "Состояние NUMA хоста.",
+            "$ref": "#/components/schemas/AutoNumaStatus"
+          },
+          "certificate": {
+            "description": "Сертификат хоста.",
+            "$ref": "#/components/schemas/Certificate"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "cpu": {
+            "description": "Тип процессора данного хоста.",
+            "$ref": "#/components/schemas/Cpu"
+          },
+          "description": {
+            "description": "Человекочитаемое описание в виде обычного текста.",
+            "type": "string",
+            "example": "HE host"
+          },
+          "device_passthrough": {
+            "xml": {
+              "name": "device_passthrough"
+            },
+            "description": "Указывает, включен ли passthrough хост-устройства на данном хосте.",
+            "$ref": "#/components/schemas/HostDevicePassthrough"
+          },
+          "display": {
+            "description": "Опционально указывает адрес отображения этого хоста в явном виде.",
+            "$ref": "#/components/schemas/Display"
+          },
+          "external_status": {
+            "description": "Внешнее состояние хоста.",
+            "xml": {
+              "name": "external_status"
+            },
+            "$ref": "#/components/schemas/HostStatus",
+            "example": "ok"
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "example": 234
+          }
+        }
+      },
+      "HostDevicePassthrough": {
+        "type": "object",
+        "xml": {
+          "name": "host_device_passthrough",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "HostNic": {
+        "type": "object",
+        "description": "Представляет сетевую карту хоста.",
+        "xml": {
+          "name": "host_nic"
+        },
+        "properties": {
+          "id": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            },
+            "example": 517
+          }
+        }
+      },
+      "HostStatus": {
+        "type": "string",
+        "description": "Тип, представляющий состояние хоста.\n\n### Описание значений\n\n* **connecting** - Менеджер не смог установить связь с хостом в течение определённого промежутка времени, поэтому теперь он пытается установить соединение до прохождения через агента изоляции.\n* **down** - Хост не работает.\n* **error** - Хост находится в состоянии ошибки.\n\n  Это произойдет, если попытаться запустить виртуальную машину несколько раз, и она потерпит неудачу.\n\n* **initializing** - Идет инициализация хоста.\n\n  Это промежуточный шаг перед переводом хоста в состояние \"up\".\n\n* **install_failed** - Не удалось выполнить установку хоста.\n\n  В таких случаях следует посмотреть журнал событий, чтобы понять, что именно привело к неудачной установке, и выполнить повторную установку.\n\n* **installing** - Выполняется установка хоста.\n* **installing_os** - Происходит установка операционной системы хоста.\n\n  Данный статус актуален при использовании провайдера Satellite/Foreman.\n\n* **kdumping** - В ядре хоста произошел сбой, выполняется дампинг памяти.\n* **maintenance** - Хост находится в состоянии обслуживания.\n* **non_operational** - Хост в неработоспособном состоянии\n\n  Это может происходить по разным причинам, например, из-за отсутствия связи с хранилищем, отсутствия поддержки обязательной сети, отсутствия поддержки на уровне кластера и др.\n\n* **non_responsive** - Хост не реагирует на запросы.\n* **preparing_for_maintenance** - Хост готовится к обслуживанию.\n\n   За это время Менеджер успевает произвести миграцию всех виртуальных машин с этого хоста на другие хосты. После завершения всех миграций хост переходит в статус 'maintenance'.\n\n* **reboot** - Идет перезагрузка хоста.\n* **unassigned** - Хост находится в процессе активации.\n* **up** - Хост включен\n",
+        "xml": {
+          "name": "host_status",
+          "wrapped": false
+        },
+        "enum": [
+          "connecting",
+          "down",
+          "error",
+          "initializing",
+          "install_failed",
+          "installing",
+          "installing_os",
+          "kdumping",
+          "maintenance",
+          "non_operational",
+          "non_responsive",
+          "preparing_for_maintenance",
+          "reboot",
+          "unassigned",
+          "up"
+        ],
+        "example": "up"
+      },
+      "HostStorage": {
+        "type": "object",
+        "xml": {
+          "name": "host_storage",
+          "wrapped": false
+        }
+      },
+      "InheritableBoolean": {
+        "type": "string",
+        "xml": {
+          "attribute": false,
+          "wrapped": false
+        },
+        "description": "Перечисление, представляющее булево значение, которое может быть либо задано, либо унаследовано с более высокого уровня. Порядок наследования следующий: виртуальная машина → кластер → engine-config.\n\n### Описание значений\n\n* **false** - Установить для текущего уровня значение false.\n* **inherit** - Наследовать значение с более высокого уровня.\n* **true** - Установить для текущего уровня значение true.\n",
+        "enum": [
+          "false",
+          "inherit",
+          "true"
+        ],
+        "example": "inherit"
+      },
+      "InstanceType": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "instance_type"
+        }
+      },
+      "IscsiBond": {
+        "type": "object",
+        "description": "Тип, описывающий бонд iSCSI",
+        "xml": {
+          "name": "iscsi_bond",
+          "wrapped": false
+        }
+      },
+      "IscsiDetails": {
+        "type": "object"
+      },
+      "Ksm": {
+        "type": "object",
+        "description": "Управление параметрами KSM",
+        "xml": {
+          "name": "ksm",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Включение/выключение ksm",
+            "example": true
+          },
+          "merge_across_nodes": {
+            "type": "boolean",
+            "description": "Если установлено значение true - активируется опция \"Распределение страниц памяти по всей доступной памяти\"",
+            "example": true
+          }
+        }
+      },
+      "LogMaxMemoryUsedThresholdType": {
+        "type": "string",
+        "description": "Описываются все типы максимальных пороговых значений памяти, поддерживаемых системой.",
+        "xml": {
+          "name": "log_max_memory_used_threshold_type",
+          "wrapped": false
+        },
+        "enum": [
+          "absolute_value_in_mb",
+          "percentage"
+        ],
+        "example": "percentage"
+      },
+      "LogSeverity": {
+        "description": "Тип, содержащий списов возможных уровней серьезности событий\n\n### Описание значений\n\n* **alert** - Предупреждение. Используется для указания состояния, \nтребующего немедленного внимания.\n* **error** - Ошибка. Используется для указания на наличие ошибки, которую \nнеобходимо исследовать.\n* **normal** - Нормальное состояние.  Используется для информационных событий.\n* **warning** - Внимание. Используется для предупреждения о том, что что-то может быть не так.\n",
+        "type": "string",
+        "xml": {
+          "name": "severity",
+          "wrapped": false
+        },
+        "enum": [
+          "alert",
+          "error",
+          "normal",
+          "warning"
+        ],
+        "example": "normal"
+      },
+      "Mac": {
+        "description": "Представляет MAC-адрес виртуального сетевого интерфейса.",
+        "type": "object",
+        "xml": {
+          "name": "mac",
+          "wrapped": true
+        },
+        "properties": {
+          "address": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "MAC-адрес",
+            "example": "00:00:00:00:00:00"
+          }
+        }
+      },
+      "MacPool": {
+        "type": "object",
+        "xml": {
+          "name": "mac_pool",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий пул MAC-адресов\n\nПример XML-представления пула MAC-адресов:\n\n```\n<mac_pool href=\"/ovirt-engine/api/macpools/123\" id=\"123\">\n  <name>Default</name>\n  <description>Default MAC pool</description>\n  <allow_duplicates>false</allow_duplicates>\n  <default_pool>true</default_pool>\n  <ranges>\n    <range>\n      <from>00:1A:4A:16:01:51</from>\n      <to>00:1A:4A:16:01:E6</to>\n    </range>\n  </ranges>\n</mac_pool>\n```\n"
+      },
+      "MemoryOverCommit": {
+        "description": "Позволяет указать значение в процентах для функции перераспределения памяти",
+        "type": "object",
+        "xml": {
+          "name": "memory_over_commit",
+          "wrapped": false
+        },
+        "properties": {
+          "percent": {
+            "type": "integer",
+            "example": 150
+          }
+        }
+      },
+      "MemoryPolicy": {
+        "type": "object",
+        "xml": {
+          "name": "memory_policy",
+          "wrapped": false
+        },
+        "description": "Логическая группировка свойств связанных с памятью виртуальных машин.",
+        "properties": {
+          "ballooning": {
+            "type": "boolean",
+            "description": "Включение/отключение динамического выделения памяти",
+            "example": true
+          },
+          "guaranteed": {
+            "type": "integer",
+            "description": "Объем памяти в байтах, который гарантированно не будет израсходован механизмом динамического выделения.",
+            "example": 1073741824
+          },
+          "max": {
+            "type": "integer",
+            "description": "Максимальный объем памяти виртуальной машины, в байтах.",
+            "example": 1073741824
+          },
+          "over_commit": {
+            "xml": {
+              "name": "over_commit",
+              "wrapped": false
+            },
+            "$ref": "#/components/schemas/MemoryOverCommit"
+          },
+          "transparent_huge_pages": {
+            "$ref": "#/components/schemas/TransparentHugePages"
+          }
+        }
+      },
+      "MigrateOnError": {
+        "type": "string",
+        "description": "Представляет варианты поведения миграции при ошибке\n\n### Описание значений\n\n* **do_not_migrate** - не мигрировать ВМ\n* **migrate** - мигрировать все ВМ\n* **migrate_highly_available** - мигрировать только высокодоступные ВМ\n",
+        "xml": {
+          "name": "migrate_on_error",
+          "wrapped": false
+        },
+        "enum": [
+          "do_not_migrate",
+          "migrate",
+          "migrate_highly_available"
+        ],
+        "example": "migrate"
+      },
+      "MigrationBandwidth": {
+        "type": "object",
+        "xml": {
+          "name": "migration_bandwidth",
+          "wrapped": false
+        },
+        "description": "Определяет пропускную способность, используемую при миграции.",
+        "properties": {
+          "assignment_method": {
+            "description": "Метод, используемый для назначения полосы пропускания.",
+            "$ref": "#/components/schemas/MigrationBandwidthAssignmentMethod"
+          },
+          "custom_value": {
+            "type": "integer",
+            "description": "Пользовательская пропускная способность в Мбит/с. Будет применяться только в том случае, если атрибут assignmentMethod установлен в значение Custom.",
+            "example": 100
+          }
+        }
+      },
+      "MigrationBandwidthAssignmentMethod": {
+        "type": "string",
+        "description": "Определяет, как назначается пропускная способность миграции.\n\n### Описание значений\n\n* **auto** - Берет полосу пропускания из Quality of Service, если Quality of Service определено.\n* **custom** - Пользовательская пропускная способность в Мбит/с.\n* **hypervisor_default** - Принимает значение, сконфигурированное на гипервизоре.\n",
+        "xml": {
+          "name": "assignment_method"
+        },
+        "enum": [
+          "auto",
+          "custom",
+          "hypervisor_default"
+        ],
+        "example": "custom"
+      },
+      "MigrationOptions": {
+        "type": "object",
+        "description": "Тип для опций миграции.",
+        "xml": {
+          "name": "migration"
+        },
+        "properties": {
+          "auto_converge": {
+            "$ref": "#/components/schemas/InheritableBoolean"
+          },
+          "bandwidth": {
+            "xml": {
+              "name": "bandwidth"
+            },
+            "$ref": "#/components/schemas/MigrationBandwidth"
+          },
+          "compressed": {
+            "description": "Указывает, должно ли использоваться сжатие при миграции",
+            "$ref": "#/components/schemas/InheritableBoolean"
+          },
+          "encrypted": {
+            "description": "Указывает, должна ли применяться шифрование при миграции.",
+            "$ref": "#/components/schemas/InheritableBoolean"
+          },
+          "policy": {
+            "description": "Ссылка на политику миграции, заданную с помощью engine-config.",
+            "xml": {
+              "name": "policy",
+              "wrapped": false
+            },
+            "$ref": "#/components/schemas/MigrationPolicy"
+          }
+        }
+      },
+      "MigrationPolicy": {
+        "type": "object",
+        "xml": {
+          "name": "migration_policy",
+          "wrapped": false
+        },
+        "description": "Политика, описывающая параметры, относящиеся к миграции, например, конвергенция или количество параллельных миграций.",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Свободный текст, содержащий комментарии к данному объекту."
+          },
+          "description": {
+            "type": "string",
+            "description": "Человекочитаемое описание в виде обычного текста."
+          },
+          "id": {
+            "xml": {
+              "attribute": true
+            },
+            "type": "string",
+            "description": "Уникальный идентификатор.",
+            "example": 4403
+          },
+          "name": {
+            "type": "string",
+            "description": "Человекочитаемое имя в виде обычного текста.",
+            "example": "NewMigPol"
+          }
+        }
+      },
+      "Network": {
+        "type": "object",
+        "xml": {
+          "name": "network"
+        },
+        "description": "Тип, описывающий логическую сеть.\n\nПример XML-представления логической сети:\n\n```\n<network href=\"/ovirt-engine/api/networks/456\" id=\"456\">\n  <name>ovirtmgmt</name>\n  <description>Management Network</description>\n  <link href=\"/ovirt-engine/api/networks/456/permissions\" rel=\"permissions\"/>\n  <link href=\"/ovirt-engine/api/networks/456/vnicprofiles\" rel=\"vnicprofiles\"/>\n  <link href=\"/ovirt-engine/api/networks/456/labels\" rel=\"labels\"/>\n  <data_center href=\"/ovirt-engine/api/datacenters/123\" id=\"123\"/>\n  <stp>false</stp>\n  <mtu>0</mtu>\n  <usages>\n    <usage>vm</usage>\n  </usages>\n</network>\n```\n"
+      },
+      "NetworkFilter": {
+        "type": "object",
+        "xml": {
+          "name": "network_filter",
+          "wrapped": false
+        },
+        "description": "Сетевые фильтры осуществляют фильтрацию пакетов, отправляемых на сетевую карту \nвиртуальной машины и получаемых от нее в соответствии с заданными правилами.\n\nВ libvirt поддерживается несколько типов сетевых фильтров. \nПодробнее о различных сетевых фильтрах см. [здесь](https://libvirt.org/firewall.html).\n\nВ дополнение к сетевым фильтрам libvirt существуют два дополнительных \nсетевых фильтра: Первый называется `vdsm-no-mac-spoofing` и состоит из \n`no-mac-spoofing` и `no-arp-mac-spoofing`. Второй называется `ovirt-no-filter` и \nиспользуется в тех случаях, когда для сетевой карты виртуальной машины не \nтребуется определять сетевой фильтр. Сетевой фильтр `ovirt-no-filter` используется \nтолько для внутренней реализации и не существует на сетевых картах.\n\nПример XML-представления:\n\n```\n<network_filter id=\"00000019-0019-0019-0019-00000000026c\">\n  <name>example-filter</name>\n  <version>\n    <major>4</major>\n    <minor>0</minor>\n    <build>-1</build>\n    <revision>-1</revision>\n  </version>\n</network_filter>\n```\n"
+      },
+      "NotifiableEvent": {
+        "type": "string",
+        "xml": {
+          "name": "event",
+          "wrapped": false
+        },
+        "description": "Тип, представляющий подмножество событий в сервере zVirt, на которые пользователь \nможет подписаться, чтобы получать уведомления о них.\n"
+      },
+      "NotificationMethod": {
+        "type": "string",
+        "description": "Тип, представляющий метод уведомления для подписки на событие. В настоящее \nвремя API поддерживает только SMTP. В будущем может быть добавлена поддержка \nSNMP-уведомлений.\n\n### Описание значений\n\n* **smtp** - Уведомление по электронной почте.\n  Подписка на события с методом уведомления по SMTP будет содержать адрес \n  электронной почты в поле адреса.\n* **snmp** - Уведомление по протоколу SNMP.\n  Подписки на события с методом уведомления по SNMP будут содержать SNMP-адрес в \n  поле адреса.\n"
+      },
+      "OpenStackVolumeType": {
+        "type": "object",
+        "description": "Тип, описывающий параметры томов OpenStack",
+        "xml": {
+          "name": "openstack_volume_type",
+          "wrapped": false
+        }
+      },
+      "Option": {
+        "type": "object",
+        "xml": {
+          "name": "option"
+        },
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "Permit": {
+        "type": "object",
+        "xml": {
+          "name": "permit",
+          "wrapped": false
+        },
+        "description": "Тип описывающий конкретное право"
+      },
+      "Permission": {
+        "type": "object",
+        "xml": {
+          "name": "permission",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий разрешение"
+      },
+      "ProductInfo": {
+        "xml": {
+          "name": "product_info",
+          "wrapped": false
+        },
+        "type": "object"
+      },
+      "ProfileDetail": {
+        "type": "object",
+        "xml": {
+          "name": "profile_detail",
+          "wrapped": false
+        }
+      },
+      "Property": {
+        "type": "object",
+        "xml": {
+          "name": "property"
+        },
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "QcowVersion": {
+        "type": "string",
+        "xml": {
+          "name": "qcow_version",
+          "wrapped": false
+        },
+        "description": "Версия QCOW указывает qemu, какую версию qemu поддерживает данный том.\n\nЭто поле может быть обновлено с помощью API-запроса Update и будет сообщено \nтолько для томов QCOW. Оно зависит от версии домена хранения, на котором создан \nдиск. Домены хранения с версией ниже V4 поддерживают тома QCOW2 версии 2, а домены \nхранения V4 и выше также поддерживают QCOW2 версии 3. Подробнее о возможностях \nразличных версий QCOW см. [здесь](http://wiki.qemu.org/Features/Qcow3).\n",
+        "enum": [
+          "qcow2_v2",
+          "qcow2_v3"
+        ],
+        "example": "qcow2_v3"
+      },
+      "Qos": {
+        "type": "object",
+        "xml": {
+          "name": "qos",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий атрибуты для определения качества обслуживания (QoS).\n\nДля хранилища типом является `storage`. Значимыми являются атрибуты `max_throughput`, \n`max_read_throughput`, `max_write_throughput`, `max_iops`, `max_read_iops` и \n`max_write_iops`.\n\nДля ресурсов с вычислительными возможностями типом является `cpu`. \nЗначимым является атрибут `cpu_limit`.\n\nДля сетей виртуальных машин тип - `network`.\nЗначимыми являются атрибуты `inbound_average`, `inbound_peak`, `inbound_burst`, \n`outbound_average`, `outbound_peak` и `outbound_burst`.\n\nДля сетей хостов тип - `hostnetwork`.\nЗначимыми являются атрибуты `outbound_average_linkshare`, `outbound_average_upperlimit`\nи `outbound_average_realtime`.\n"
+      },
+      "Quota": {
+        "type": "object",
+        "description": "Тип, описывающий квоту",
+        "xml": {
+          "name": "quota",
+          "wrapped": false
+        }
+      },
+      "QuotaModeType": {
+        "type": "string",
+        "xml": {
+          "name": "quota_mode",
+          "wrapped": false
+        },
+        "description": "Тип, содержащий список возможных режимов квотирования\n\n### Описание значений\n\n* **audit** - квотирование установлено в режим \"аудит\" (превышение квоты пишется в журнал\nно не запрещает выполнение операции)\n* **disabled** - квотирование отключено\n* **enabled** - принудительный режим квотирования\n",
+        "enum": [
+          "audit",
+          "disabled",
+          "enabled"
+        ],
+        "example": "enabled"
+      },
+      "RngSource": {
+        "type": "string",
+        "description": "Представление типов бекендов генератора случайных чисел.\n\n### Описание значений\n\n* **hwrng** - Получение случайных данных с устройства /dev/hwrng (обычно это специализированный HW-генератор).\n* **random** - Получение случайных данных с устройства /dev/random.\n* **urandom** - Получение случайных данных с устройства /dev/urandom.\n",
+        "enum": [
+          "hwrng",
+          "random",
+          "urandom"
+        ],
+        "example": "urandom"
+      },
+      "SchedulingPolicy": {
+        "type": "object",
+        "xml": {
+          "name": "scheduling_policy",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий политику планирования"
+      },
+      "SchedulingPolicyUnit": {
+        "type": "object",
+        "xml": {
+          "name": "scheduling_policy_unit",
+          "wrapped": false
+        },
+        "description": "Тип, описывающий элемент политики планирования"
+      },
+      "ScsiGenericIO": {
+        "type": "string",
+        "xml": {
+          "name": "sgio"
+        },
+        "description": "Когда прямой LUN-диск использует SCSI passthrough, политика привилегированного \nввода-вывода определяется этим перечислением.\n\n### Описание значений\n\n* **disabled** - SCSI passthrough отключен\n* **filtered** - Запрет привилегированного ввода/вывода SCSI.\n* **unfiltered** - Разрешение привилегированного ввода/вывода SCSI.\n",
+        "enum": [
+          "disabled",
+          "filtered",
+          "unfiltered"
+        ],
+        "example": "disabled"
+      },
+      "SerialNumber": {
+        "type": "object",
+        "xml": {
+          "name": "serial_number",
+          "wrapped": false
+        },
+        "properties": {
+          "policy": {
+            "xml": {
+              "name": "policy",
+              "wrapped": false
+            },
+            "$ref": "#/components/schemas/SerialNumberPolicy"
+          },
+          "value": {
+            "type": "string",
+            "description": "Серийный номер, в случае применения политики custom",
+            "example": "d34f1d0r3"
+          }
+        }
+      },
+      "SerialNumberPolicy": {
+        "type": "string",
+        "description": "Тип, представляющий политику серийного номера.\n\n### Описание значений\n\n* **custom** - Эта политика позволяет пользователю указать произвольную строку в качестве серийного номера.\n* **host** - Эта политика является унаследованной политикой. В ней в качестве серийного номера будет использоваться идентификатор хоста.\n* **none** - Эта политика используется для удаления политики серийного номера, переводя ее в значение по умолчанию: null.\n* **vm** - В этой политике в качестве серийного номера будет использоваться идентификатор виртуальной машины.\n",
+        "enum": [
+          "custom",
+          "host",
+          "none",
+          "vm"
+        ],
+        "example": "custom"
+      },
+      "SkipIfConnectivityBroken": {
+        "type": "object",
+        "xml": {
+          "name": "skip_if_connectivity_broken",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Если эта опция включена, то хост не будет изолироваться, если более чем настраиваемый процент хостов в кластере также потерял соединение.",
+            "example": true
+          },
+          "threshold": {
+            "type": "integer",
+            "description": "Порог для тестирования связности.",
+            "example": 60
+          }
+        }
+      },
+      "SkipIfSdActive": {
+        "description": "Этот тип представляет конфигурацию, связанную с хранением данных в политике изоляции.",
+        "type": "object",
+        "xml": {
+          "name": "skip_if_sd_active",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Если эта опция включена, то изоляция будет пропущена в случае, если хост сохраняет аренду в хранилище.",
+            "example": true
+          }
+        }
+      },
+      "Snapshot": {
+        "type": "object",
+        "description": "Тип, описывающий параметры снимка ВМ",
+        "xml": {
+          "name": "snapshot",
+          "wrapped": false
+        }
+      },
+      "SpecialObjects": {
+        "type": "object",
+        "xml": {
+          "wrapped": false,
+          "name": "special_objects"
+        }
+      },
+      "Statistic": {
+        "type": "object",
+        "xml": {
+          "name": "statistic"
+        }
+      },
+      "StorageConnection": {
+        "type": "object"
+      },
+      "StorageDomain": {
+        "type": "object",
+        "description": "Тип, описывающий домен хранения.\n\nXML-представление домена хранения NFS с идентификатором 123:\n\n```\n<storage_domain href=\"/ovirt-engine/api/storagedomains/123\" id=\"123\">\n  <name>mydata</name>\n  <description>My data</description>\n  <available>38654705664</available>\n  <committed>1073741824</committed>\n  <critical_space_action_blocker>5</critical_space_action_blocker>\n  <external_status>ok</external_status>\n  <master>true</master>\n  <storage>\n    <address>mynfs.example.com</address>\n    <nfs_version>v3</nfs_version>\n    <path>/exports/mydata</path>\n    <type>nfs</type>\n  </storage>\n  <storage_format>v3</storage_format>\n  <type>data</type>\n  <used>13958643712</used>\n  <warning_low_space_indicator>10</warning_low_space_indicator>\n  <wipe_after_delete>false</wipe_after_delete>\n  <data_centers>\n    <data_center href=\"/ovirt-engine/api/datacenters/456\" id=\"456\"/>\n  </data_centers>\n</storage_domain>\n```\n",
+        "xml": {
+          "name": "storage_domain",
+          "wrapped": false
+        }
+      },
+      "StorageFormat": {
+        "type": "string",
+        "xml": {
+          "name": "storage_format"
+        },
+        "description": "Тип, содержащий список возможных форматов доменов хранения\n\n### Описание значений\n\n* **v1** - Версия 1 формата домена хранения применима к доменам хранения NFS, iSCSI и FC.\n* **v2** - Версия 2 формата домена хранения применима к доменам хранения iSCSI и FC.\n* **v3** - Версия 3 формата домена хранения применима к доменам хранения NFS, POSIX, iSCSI и FC.\n* **v4** - Версия 4 формата домена хранения.\n* **v5** - Версия 5 формата домена хранения применима к доменам хранения NFS, POSIX и Gluster.\n\nПолее подробную информацию о версиях метаданных можно прочитать в [техническом справочнике](https://wiki.orionsoft.ru/ru/zVirt/latest/tech-guide.adoc)\n",
+        "enum": [
+          "v1",
+          "v2",
+          "v3",
+          "v4",
+          "v5"
+        ]
+      },
+      "SwitchType": {
+        "type": "string",
+        "xml": {
+          "name": "switch_type",
+          "wrapped": false
+        },
+        "description": "Описывает все типы коммутаторов, поддерживаемые менеджером\n\n### Описание значений\n\n* **legacy** - собственный тип (Мост)\n* **ovs** - тип Open vSwitch\n",
+        "enum": [
+          "legacy",
+          "ovs"
+        ]
+      },
+      "Template": {
+        "type": "object",
+        "description": "Тип, представляющий шаблон виртуальной машины. Шаблоны позволяют быстро создавать виртуальные машины с общей конфигурацией и состоянием диска.\n",
+        "xml": {
+          "wrapped": false,
+          "name": "template"
+        }
+      },
+      "TransparentHugePages": {
+        "type": "object",
+        "description": "Тип, представляющий поддержку прозрачных больших страниц (THP).",
+        "xml": {
+          "name": "transparent_huge_pages",
+          "wrapped": false
+        },
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Включение/отключение поддержки THP.",
+            "example": true
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "description": "Тип, описывающий пользователя",
+        "xml": {
+          "name": "user",
+          "wrapped": false
+        }
+      },
+      "VcpuPin": {
+        "type": "object",
+        "xml": {
+          "name": "vcpu_pin",
+          "wrapped": false
+        },
+        "properties": {
+          "cpu_set": {
+            "type": "string"
+          },
+          "vcpu": {
+            "type": "integer"
+          }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "xml": {
+          "name": "version",
+          "wrapped": false
+        },
+        "description": "тип, представляющий описание версии сущности"
+      },
+      "Vm": {
+        "type": "object",
+        "xml": {
+          "name": "vm",
+          "wrapped": false
+        },
+        "properties": {
+          "id": {
+            "type": "string",
+            "xml": {
+              "attribute": true,
+              "wrapped": false
+            },
+            "example": 765
+          }
+        }
+      },
+      "statusCode": {
+        "type": "object",
+        "properties": {
+          "fault": {
+            "xml": {
+              "name": "fault"
+            },
+            "type": "object",
+            "properties": {
+              "detail": {
+                "description": "Информация об ошибке",
+                "example": "For correct usage, see: https://example.local/ovirt-engine/apidoc#services/affinity_labels/methods/add"
+              },
+              "reason": {
+                "description": "Причина ошибки",
+                "example": "Request syntactically incorrect."
+              }
+            }
+          },
+          "complete": {
+            "type": "object",
+            "xml": {
+              "name": "action"
+            },
+            "properties": {
+              "status": {
+                "type": "string",
+                "example": "complete"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

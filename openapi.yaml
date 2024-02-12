@@ -1,0 +1,869 @@
+openapi: 3.0.2
+info:
+  title: Swagger Petstore - OpenAPI 3.1
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.1 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  version: '1.0'
+servers:
+  - url: emulate-api.zvirt/ovirt-engine/api/v4
+tags:
+  - name: affinity-labels
+  - name: types
+    description: Типы данных, поддерживаемые REST API zVirt
+  - name: primitives
+    description: Базовые типы данных
+paths:
+  /affinitylabels:
+    description: Управляет доступными в системе метками сходства.
+    post:
+      tags:
+        - affinity-labels
+      summary: Создание новой метки сходства
+      description: Создает новую метку. Метка автоматически прикрепляется ко всем сущностям, упомянутым в списках vms или hosts.
+      parameters: 
+        - name: affinity_label
+          in: query
+          description: Параметры создаваемой метки
+          required: true
+          content: 
+            application/json: 
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AffinityLabel'
+      operationId: addAffinityLabel
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/AffinityLabel'
+            example:
+              name: AF-L-001
+              description: New AF-label
+      responses: 
+        '200':
+          description: OK
+          content: 
+            application/xml: 
+              schema:
+                $ref: '#/components/schemas/AffinityLabel'
+              example:
+                id: 123
+                name: AF-L-001
+                description: New AF-label
+                has_implicit_affinity_group: false
+    get:
+      tags:
+        - affinity-labels
+      summary: Отображение всех меток.
+      description: Отображение всех меток, присутствующих в системе.
+      operationId: listAffinityLabel
+      parameters: 
+        - name: follow
+          in: path
+          description: Указывает, по каким внутренним ссылкам следует переходить.
+          schema: 
+            type: string
+        - name: max
+          in: path
+          description: Устанавливает максимальное количество возвращаемых меток. Если не указано, возвращаются все метки.
+          schema: 
+            type: string
+      responses: 
+        '200':
+          description: OK
+          content: 
+            application/json: 
+              schema:
+                xml:
+                  name: affinity_labels
+                type: array
+                title: affinity_labels
+                items:
+                  $ref: '#/components/schemas/AffinityLabel'
+
+          links: 
+            hosts:
+              operationId: getHost
+              description: Список хостов, имеющих текущую метку сходства.
+              parameters: 
+                id: $request.path.id
+            vms:
+              operationId: getVm
+              description: Список виртуальных машин, имеющих текущую метку сходства.
+              parameters: 
+                id: $request.path.id
+  /api_summary:
+    get:
+      tags:
+        - services
+      summary: Получение сводок
+      operationId: getApiSummary
+      responses: 
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiSummary'
+  /bonding:
+    get:
+      tags:
+        - services
+      responses: 
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Bonding'
+components:
+  schemas:
+    AccessProtocol:
+      type: string
+      description: Представляет протоколы доступа, поддерживаемые томами Gluster. Gluster и nfs включены по умолчанию.
+      examples: [cifs]
+      enum: 
+        - cifs
+        - gluster
+        - nfs
+      xml:
+        name: access_protocol
+    Action:
+      type: object
+      properties: 
+        activate:
+          type: boolean
+        allow_partial_import:
+          type: boolean
+        async:
+          type: boolean
+        disk_attachment:
+          $ref: '#/components/schemas/DiskAttachment'
+        authorized_key:
+          $ref: '#/components/schemas/AuthorizedKey'
+        auto_pinning_policy:
+          $ref: '#/components/schemas/AutoPinningPolicy'
+        brics:
+          $ref: '#/components/schemas/GlusterBrick'
+        certificates:
+          $ref: '#/components/schemas/Certificate'
+        check_connectivity:
+          type: boolean
+        clone:
+          type: boolean
+        clone_permissions:
+          type: boolean
+        cluster:
+          $ref: '#/components/schemas/Cluster'
+        collapse_snapshots:
+          type: boolean
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        commit_on_success:
+          type: boolean
+        storage_connection:
+          $ref: '#/components/schemas/StorageConnection'
+        connectivity_timeout:
+          type: integer
+          format: int32
+        data_center:
+          $ref: '#/components/schemas/DataCenter'
+        deploy_hosted_engine:
+          type: boolean
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        gluster_volume_profile_details:
+          $ref: '#/components/schemas/GlusterVolumeProfileDetails'
+        directory:
+          type: string
+        discard_snapshots:
+          type: boolean
+        discovered_targets:
+          $ref: '#/components/schemas/IscsiDetails'
+      xml: 
+        name: action
+    AffinityGroup:
+      type: object
+      xml: 
+        name: affinity_group
+      description: Группа сходства представляет собой группу виртуальных машин с определенной взаимосвязью.
+      properties:
+        broken:
+          type: boolean
+          description: Указывает, нарушена ли группа сходства. Аффинити-группа считается нарушенной, если какое-либо из ее правил не выполняется. Broken — это вычисляемое поле в движке. По этой причине это поле можно использовать только в запросах GET.
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        hosts_rule:
+          description: Указывает правило сходства, применяемое между виртуальными машинами и хостами, которые являются членами этой группы сходства
+          $ref: '#/components/schemas/AffinityRule'
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+        priority:
+          type: number
+          format: float
+          description: Приоритет группы сходства
+        vms_rule:
+          description: Указывает правило сходства, применяемое к виртуальным машинам, которые являются членами этой группы сходства.
+    AffinityLabel:
+      type: object
+      xml:
+        name: affinity_label
+      description: Метка сходства может влиять на планирование виртуальных машин. Чаще всего используется для создания подкластера из доступных хостов.
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+          examples: 
+            - 'some comment'
+        description: 
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+          examples: 
+            - 'New affinity label'
+        has_implicit_affinity_group:
+          type: boolean
+          description: |
+            Это свойство включает устаревшее поведение для меток. Если true, метка также действует как принудительная группа сходства между виртуальными машинами и хостом.
+
+            Этот параметр используется только для кластеров с версией совместимости 4.3 или ниже.
+          examples: 
+            - false
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+          examples: 
+            - '1234'
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+          examples: 
+            - 'NewAL'
+        read_only:
+          type: boolean
+          description: Свойство read_only указывает на метку, которую нельзя изменить. Обычно это происходит при перечислении меток, созданных внутри компании.
+          examples: 
+            - false
+        hosts:
+          type: object
+          description: Список хостов, имеющих текущую метку сходства.
+          properties:
+            host:
+              $ref: '#/components/schemas/host'
+        vms:
+          description: Список ВМ, имеющих текущую метку сходства.
+          type: object
+          properties:
+            vm:
+              $ref: '#/components/schemas/vm'
+      required: 
+        - name
+    AffinityRule:
+      type: object
+      xml:
+        name: affinity_rule
+      description: Общее определение правила для группы сходства. Каждый поддерживаемый тип ресурса (виртуальная машина, хост) контролируется отдельным правилом. Это позволяет выражать такие правила, как отсутствие сходства между определенными виртуальными машинами, но жесткое сходство между определенными виртуальными машинами и виртуальными хостами.
+      properties: 
+        enabled:
+          type: boolean
+          description: Указывает, использует ли группа сходства это правило или нет. Этот атрибут является необязательным при создании и считается необязательным, если он не указан, устанавливается значение `true`. Если этот атрибут не указан для операции обновления, считается, что атрибут AffinityGroup **positive** также установлен в значение `true`. Базовое значение enabled будет сохранено, если оба атрибута **enabled** и **positive** отсутствуют.
+        enforcing:
+          type: boolean
+          description: Указывает, использует ли группа сходства жесткое или мягкое принудительное применение сходства, применяемого к ресурсам, которые контролируются этим правилом. Этот аргумент является обязательным, если правило включено, и игнорируется, если правило отключено.
+        positive:
+          type: boolean
+          description: Указывает, применяет ли группа сходства положительное или отрицательное сходство к ресурсам, которые контролируются этим правилом. Этот аргумент является обязательным, если правило включено, и игнорируется, если правило отключено.
+    Agent:
+      type: object
+      description: Тип, представляющий агента изоляции
+      properties: 
+        address:
+          type: string
+          description: Адрес агента изоляции
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        concurrent:
+          type: boolean
+          description: Указывает, следует ли использовать агент одновременно или последовательно.
+        description: 
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        encrypt_options:
+          type: boolean
+          description: Указывает, следует ли шифровать параметры.
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+        options:
+          description: Параметры агента ограждения (список пар ключ-значение, разделенный запятыми).
+          $ref: '#/components/schemas/Option'
+        order:
+          type: integer
+          format: int32
+          description: Порядок этого агента при использовании с другими агентами.
+        password:
+          type: string
+          description: Пароль для доступа к агенту изоляции
+        port:
+          type: string
+          description: Порт для подключения к агенту изоляции
+        type:
+          type: string
+          description: Тип агента изоляции
+        username:
+          type: string
+          description: Имя пользователя для доступа к агенту изоляции
+    API:
+      type: object
+      xml:
+        name: api
+
+      description: |
+        тот тип содержит информацию, возвращаемую корневой службой API.
+
+        Чтобы получить эту информацию, отправьте запрос следующим образом:
+
+        ```
+        GET /ovirt-engine/api
+        ```
+
+        Результат будет таким:
+
+        ```
+        <api>
+          <link rel="hosts" href="/ovirt-engine/api/hosts"/>
+          <link rel="vms" href="/ovirt-engine/api/vms"/>
+          ...
+          <product_info>
+            <name>oVirt Engine</name>
+            <vendor>ovirt.org</vendor>
+            <version>
+              <build>0</build>
+              <full_version>4.1.0_master</full_version>
+              <major>4</major>
+              <minor>1</minor>
+              <revision>0</revision>
+            </version>
+          </product_info>
+          <special_objects>
+            <link rel="templates/blank" href="..."/>
+            <link rel="tags/root" href="..."/>
+          </special_objects>
+          <summary>
+            <vms>
+              <total>10</total>
+              <active>3</active>
+            </vms>
+            <hosts>
+              <total>2</total>
+              <active>2</active>
+            </hosts>
+            <users>
+              <total>8</total>
+              <active>2</active>
+            </users>
+            <storage_domains>
+              <total>2</total>
+              <active>2</active>
+            </storage_domains>
+          </summary>
+          <time>2016-12-12T12:22:25.866+01:00</time>
+        </api>
+        ```
+      properties: 
+        product_info:
+          description: Информация о продукте, такая как его имя, имя поставщика и версия.
+          $ref: '#/components/schemas/ProductInfo'
+        special_objects:
+          description: Ссылки на специальные объекты, такие как пустой шаблон и корень иерархии тегов.
+          $ref: '#/components/schemas/SpecialObjects'
+        summary:
+          description: Сводка, содержащая общее количество соответствующих объектов, таких как виртуальные машины, хосты и домены хранения.
+          $ref: '#/components/schemas/ApiSummary'
+        time:
+          type: string
+          format: time
+    ApiSummary:
+      type: object
+      xml:
+        name: api_summary
+      description: Сводка, содержащая общее количество соответствующих объектов, таких как виртуальные машины, хосты и домены хранения.
+      properties: 
+        hosts:
+          description: Сводка хостов
+          $ref: '#/components/schemas/ApiSummaryItem'
+        storage_domains:
+          description: Сводка доменов хранения
+          $ref: '#/components/schemas/ApiSummaryItem'
+        users:
+          description: Сводка пользователей
+          $ref: '#/components/schemas/ApiSummaryItem'
+        vms:
+          description: Сводка виртуальных машин
+          $ref: '#/components/schemas/ApiSummaryItem'
+    ApiSummaryItem:
+      type: object
+      description: Этот тип содержит элемент сводки API. Каждый элемент содержит общее и активное количество какого-либо объекта.
+      properties: 
+        active:
+          type: integer
+          format: int32
+          description: Общее количество активных объектов.
+          examples: 
+            - 5
+        total:
+          type: integer
+          format: int32
+          description: Общее количество объектов.
+          examples:
+            - 20
+    Application:
+      type: object
+      xml:
+        name: application
+      description: |
+        Представляет приложение, установленное на виртуальной машине. О приложениях сообщает гостевой агент, если вы развертываете его в операционной системе виртуальной машины.
+
+        Чтобы получить эту информацию, отправьте запрос следующим образом:
+
+        ```
+        GET /ovirt-engine/api/vms/123/applications/456
+        ```
+
+        Результат будет таким:
+
+        ```
+        <application href="/ovirt-engine/api/vms/123/applications/456" id="456">
+          <name>application-test-1.0.0-0.el7</name>
+          <vm href="/ovirt-engine/api/vms/123" id="123"/>
+        </application>
+        ```
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+      required: 
+        - id
+    Architecture:
+      type: string
+      xml:
+        name: architecture
+      enum: 
+        - ppc64
+        - s390x
+        - undefined
+        - x86_64
+      examples: 
+        - x86_64
+    AuthorizedKey:
+      type: object
+      xml:
+        name: authorized_key
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        key:
+          type: string
+          description: Значение ключа
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+      required: 
+        - id
+    AutoNumaStatus:
+      type: string
+      xml:
+        name: auto_numa_status
+      enum: 
+        - disable
+        - enable
+        - unknown
+    AutoPinningPolicy:
+      type: string
+      xml:
+        name: auto_pinning_policy
+      description: |
+        Описывает политику закрепления ЦП и NUMA.
+
+        ### adjust
+
+        Закрепление ЦП и NUMA будет настроено выделенным хостом.
+
+        В настоящее время это означает, что привязка ЦП и NUMA будет использовать топологию ЦП выделенного хоста. Конфигурация виртуальной машины будет автоматически настроена в соответствии с хостом для достижения максимально возможной производительности.
+
+        ### disable
+
+        Закрепление ЦП и NUMA рассчитываться не будет.
+
+        В настоящее время это означает, что закрепление ЦП и NUMA не будет рассчитываться в соответствии с текущей конфигурацией виртуальной машины. По умолчанию топология виртуальной машины включает 1 сокет, 1 ядро ​​и 1 поток.
+
+        ### existing
+
+        Закрепление ЦП и NUMA будет настроено в соответствии с текущим состоянием виртуальной машины.
+
+        В настоящее время это означает, что привязка ЦП и NUMA будет использовать предоставленную топологию ЦП виртуальной машины. Без указанной топологии ЦП будут использоваться настройки ядра по умолчанию (топология виртуальной машины с 1 сокетом, 1 ядром и 1 потоком).
+      enum: 
+        - adjust
+        - disable
+        - existing
+    Backup:
+      type: object
+      xml:
+        name: backup
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        creation_date:
+          type: string
+          format: date-time
+          description: Дата создания резервной копии.
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        from_checkpoint_id:
+          type: string
+          description: Идентификатор контрольной точки, с которой следует начать инкрементное резервное копирование.
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        modification_date:
+          type: string
+          format: date-time
+          description: Дата изменения резервной копии.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+        phase:
+          $ref: '#/components/schemas/BackupPhase'
+          description: Этап операции резервного копирования.
+        to_checkpoint_id:
+          type: string
+          description: Идентификатор контрольной точки, созданный в результате этой операции резервного копирования. Этот идентификатор можно использовать в качестве *fromCheckpointId* следующего инкрементного резервного копирования.
+    BackupPhase:
+      type: string
+      xml:
+        name: backup_phase
+      enum: 
+        - failed
+        - finalizing
+        - initializing
+        - ready
+        - starting
+        - succeeded
+      description: |
+        ### failed
+
+        Заключительный этап указывает на то, что резервное копирование не удалось.
+
+        ### finalizing
+
+        На этом этапе резервное копирование вызывает операцию **stop_backup**, чтобы завершить резервное копирование и разблокировать соответствующий диск.
+
+        ### initializing
+
+        Начальный этап резервного копирования. Он устанавливается при создании объекта.
+
+        ### ready
+
+        Этот этап означает, что URL-адреса резервных копий соответствующих дисков готовы к использованию и загрузке с помощью передачи изображений.
+
+        ### starting
+
+        Фаза устанавливается перед вызовом операции **start_backup** в **vdsm**/**libvirt** (это означает, что для завершения потока необходимо вызвать операцию **stop_backup**).
+
+        ### succeeded
+
+        Заключительный этап указывает на успешное завершение резервного копирования.
+    Balance:
+      type: object
+      xml:
+        name: balance
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        description:
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        id:
+          xml:
+            attribute : true
+          type: string
+          description: Уникальный идентификатор.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+    Bios:
+      type: object
+      xml:
+        name: bios
+      properties: 
+        boot_menu:
+          $ref: '#/components/schemas/BootMenu'
+        type:
+          $ref: '#/components/schemas/BiosType'
+          description: Комбинация типа чипсета и BIOS.
+    BiosType:
+      type: string
+      xml:
+        name: bios_type
+      description: |
+        Тип, представляющий собой комбинацию чипсета и типа BIOS.
+
+        ### cluster_default
+
+        Используется значение по умолчанию, установленное для кластера.
+
+        Это значение не может быть использовано в отношении кластера.
+
+        ### i440fx_sea_bios
+
+        Чипсет i440fx с поддержкой SeaBIOS.
+
+        Для архитектур, отличных от x86, это единственное допустимое значение не по умолчанию.
+
+        ### q35_ovmf
+
+        Чипсет q35 с BIOS OVMF (UEFI).
+
+        ### q35_sea_bios
+
+        Чипсет q35 с поддержкой SeaBIOS.
+
+        ### q35_secure_boot
+
+        Чипсет q35 с BIOS OVMF (UEFI) с включенной функцией SecureBoot.
+      enum: 
+        - cluster_default
+        - i440fx_sea_bios
+        - q35_ovmf
+        - q35_sea_bios
+        - q35_secure_boot
+    BlockStatistic:
+      type: object
+      xml:
+        name: block_statistic
+      properties: 
+        statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/Statistic'
+    Bonding:
+      type: object
+      xml:
+        name: bonding
+      properties: 
+        ad_partner_mac:
+          description: |
+            Свойство **ad_partner_mac** режима бондинга 4. Режим бондинга 4 - это стандарт 802.3ad, который также называется динамической агрегацией каналов. **ad_partner_mac** - MAC-адрес системы (коммутатора) на другом конце бонда. Этот параметр доступен только для чтения. Его установка не оказывает никакого влияния на бонд. Он извлекается из файла **/sys/class/net/bondX/bonding/ad_partner_mac** системы, на которой расположен бонд.
+          $ref: '#/components/schemas/Mac'
+        options:
+          description: Список элементов опций для связанного интерфейса. Каждая опция содержит атрибуты имени и значения свойства. Требуется только при добавлении связанных интерфейсов.
+          type: object
+          xml:
+            name: options
+          properties: 
+            option:
+              type: object
+              $ref: '#/components/schemas/Option'
+        slaves:
+          description: Список ведомых сетевых карт для связанного интерфейса. Требуется только при добавлении связанных интерфейсов.
+          type: object
+          properties: 
+            host_nic:
+              $ref: '#/components/schemas/HostNic'
+        active_slave:
+          description: Свойство **active_slave** в режимах бондинга, которые его поддерживают (active-backup, balance-alb и balance-tlb). Данный параметр доступен только для чтения. Его установка не оказывает никакого влияния на работу соединения. Он извлекается из файла /sys/class/net/bondX/bonding/active_slave в системе, где расположен бонд.
+          xml:
+            wrapped : true
+          $ref: '#/components/schemas/HostNic'
+    Bookmark:
+      description: Представляет закладку в системе.
+      type: object
+      xml:
+        name: bookmark
+      properties: 
+        comment:
+          type: string
+          description: Свободный текст, содержащий комментарии к данному объекту.
+        description:
+          type: string
+          description: Человекочитаемое описание в виде обычного текста.
+        id:
+          type: string
+          description: Уникальный идентификатор.
+          xml:
+            attribute : true
+        name:
+          type: string
+          description: Человекочитаемое имя в виде обычного текста.
+        value:
+          type: string
+          description: Значение закладки, представляющее поиск в менеджере.
+      required: 
+        - name
+    Boot:
+      description: Конфигурация последовательности загрузки виртуальной машины.
+      type: object
+      xml:
+        name: boot
+      properties: 
+        devices:
+          type: object
+          properties:
+            boot_device:
+              $ref: '#/components/schemas/BootDevice'
+    BootDevice:
+      type: string
+      description: |
+        Представляет собой типы устройств, с которых может загружаться виртуальная машина.
+
+        ### cdrom
+
+        Загрузка с CD-ROM. CD-ROM может быть выбран из списка ISO-файлов, доступных в домене хранения, подключенном к центру данных, к которому принадлежит виртуальная машина.
+
+        ### network
+
+        Загрузка из сети с использованием PXE. Необходимо, чтобы в сети, к которой подключена виртуальная машина, был настроен PXE.
+
+        ### hd
+
+        Загрузка с жесткого диска.
+      enum:
+        - cdrom
+        - hd
+        - network
+    BootMenu:
+      type: object
+    Certificate:
+      type: object
+    Cluster:
+      type: object
+    DataCenter:
+      type: object
+    DiskAttachment:
+      type: object
+    GlusterBrick:
+      type: object
+    GlusterVolumeProfileDetails:
+      type: object
+    host:
+      type: object
+      xml:
+        name: host
+      properties: 
+        id:
+          xml:
+            attribute : true
+          type: string
+          examples: 
+            - 234
+            - 634
+            - 623
+    HostNic:
+      type: object
+      description: Представляет сетевую карту хоста.
+      xml:
+        name: host_nic
+      properties: 
+        id:
+          type: string
+          xml:
+            attribute : true
+          examples: 
+            - 517
+            - 223
+    IscsiDetails:
+      type: object
+    Mac:
+      description: Представляет MAC-адрес виртуального сетевого интерфейса.
+      type: object
+      xml:
+        name: mac
+        wrapped : true
+      properties: 
+        address:
+          xml:
+            attribute : true
+          type: string
+          description: MAC-адрес
+          examples: 
+            - '00:00:00:00:00:00'
+    Option:
+      type: object
+      xml:
+        name: option
+      properties: 
+        name:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+    ProductInfo:
+      type: object
+    SpecialObjects:
+      type: object
+    Statistic:
+      type: object
+      xml:
+        name: statistic
+    StorageConnection:
+      type: object
+    vm:
+      type: object
+  links: 
+    hosts:
+      description: sdsd
+  
