@@ -52,7 +52,7 @@ paths:
         '200':
           description: OK
           content: 
-            application/xml: 
+            application/json: 
               schema:
                 $ref: '#/components/schemas/AffinityLabel'
               example:
