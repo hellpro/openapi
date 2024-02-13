@@ -17,6 +17,8 @@ security:
 tags:
   - name: affinitylabels
     description: Метки сходства
+    x-tag-expanded: true
+  
 paths:
   /ovirt-engine/api/affinitylabels:
     post:
@@ -51,46 +53,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:20:39 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/affinitylabels/53524b11-a551-4af9-8f80-fc71bb6c21b6
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 4a45b04a-ad96-49dc-9dbe-ab84586de702
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -123,44 +85,19 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: max
+          in: path
+          schema:
+            type: integer
+          example: 10
       responses:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:33:29 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 78fd62e2-7967-4517-b400-248012855321
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -198,40 +135,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:26:17 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 060b125f-45f2-4f70-bb0e-b59c778e2d97
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -252,8 +159,8 @@ paths:
                     rel: vms
     put:
       tags:
-        - default
-      summary: affinitilabels/{label_id}
+        - affinitilabels
+      summary: Изменение существующей метки
       description: >-
         Обновление метки. Этот запрос позволяет обновить все метаданные, такие
         как название или описание.
@@ -276,40 +183,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:28:34 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 2f0d82ac-d157-41a8-8df5-dcfdaaa7f234
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -330,8 +207,8 @@ paths:
                     rel: vms
     delete:
       tags:
-        - default
-      summary: affinitilabels/{label_id}
+        - affinitilabels
+      summary: Удаление существующей метки
       description: Удаление метки из системы и очистка всех назначений удаленной метки.
       security:
         - basicAuth: []
@@ -345,52 +222,22 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:36:52 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 377c7b85-655b-43c5-9a59-91f1442f45ed
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a/hosts:
+  /ovirt-engine/api/affinitylabels/{label_id}/hosts:
     post:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/hosts
-      description: Добавление метки к хосту.
+        - affinitylabels
+      summary: Добавление метки к хосту
+      description: Позволяет добавить существующую метку к существующему хосту.
       requestBody:
         content:
           application/json:
@@ -415,40 +262,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:46:38 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 29e97968-d1b7-433a-b4b9-f8e2684bbccf
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -458,8 +275,8 @@ paths:
                 id: 99c8c1c9-20df-4aa4-aa3d-3e6c862986df
     get:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/hosts
+        - affinitilabels
+      summary: Получение списка хостов с данной меткой
       description: |-
         Получение списка всех хостов с данной меткой.
 
@@ -476,40 +293,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:55:19 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 26c67a83-3aae-4bb6-9a51-95d789a8d4fb
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -519,11 +306,11 @@ paths:
                   - href: >-
                       /ovirt-engine/api/hosts/99c8c1c9-20df-4aa4-aa3d-3e6c862986df
                     id: 99c8c1c9-20df-4aa4-aa3d-3e6c862986df
-  /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208:
+  /ovirt-engine/api/affinitylabels/{label_id}/hosts/{host_id}:
     get:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/hosts/{host_id}
+        - affinitylabels
+      summary: Получение сведений о хосте с указанной меткой
       description: Получение информации о хосте, которому назначена данная метка.
       security:
         - basicAuth: []
@@ -537,38 +324,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 08:38:13 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 2de96c06-b931-4c39-a327-58c112634aca
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -576,12 +335,12 @@ paths:
               example:
                 href: /ovirt-engine/api/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
                 id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
-  /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d/hosts/99c8c1c9-20df-4aa4-aa3d-3e6c862986df:
+  /ovirt-engine/api/affinitylabels/{label_id}/hosts/{host_id}:
     delete:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/hosts/{host_id}
-      description: Удаление метки с хоста.
+        - affinitylabels
+      summary: Удаление метки с хоста
+      description: Удаляет указанную метку с указанного хоста.
       security:
         - basicAuth: []
       parameters:
@@ -594,51 +353,21 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 14:57:01 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 4a29e642-7fb0-48e5-b770-5390cd2a4562
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d/vms:
+  /ovirt-engine/api/affinitylabels/{label_id}/vms:
     post:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/vms
+        - affinitylabels
+      summary: Добавление метки к ВМ
       description: Добавление метки к виртуальной машине.
       requestBody:
         content:
@@ -664,40 +393,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 15:02:46 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: ef02cf5c-c3ea-45b5-9f06-6fd9e4c54c8e
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -707,8 +406,8 @@ paths:
                 id: 0b370c6a-74e7-436f-9e4b-cdf5b633d147
     get:
       tags:
-        - default
-      summary: affinitilabels/{label_id}/vms
+        - affinitylabels
+      summary: Получение списка всех ВМ с указанной меткой
       description: |-
         Получение списка всех виртуальных машин с данной меткой меткой.
 
@@ -725,40 +424,10 @@ paths:
         '200':
           description: OK
           headers:
-            Date:
-              schema:
-                type: string
-                example: Mon, 23 Oct 2023 15:04:55 GMT
-            Server:
-              schema:
-                type: string
-                example: >-
-                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-                  mod_wsgi/4.6.4 Python/3.6
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 1990fa20-4373-4037-a791-12e9d1a7c804
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
