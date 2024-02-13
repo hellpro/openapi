@@ -335,7 +335,6 @@ paths:
               example:
                 href: /ovirt-engine/api/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
                 id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
-  /ovirt-engine/api/affinitylabels/{label_id}/hosts/{host_id}:
     delete:
       tags:
         - affinitylabels
