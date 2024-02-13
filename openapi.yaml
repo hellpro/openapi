@@ -17,8 +17,6 @@ security:
 tags:
   - name: affinitylabels
     description: Метки сходства
-    x-tag-expanded: true
-  
 paths:
   /ovirt-engine/api/affinitylabels:
     post:
