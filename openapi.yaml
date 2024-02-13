@@ -115,7 +115,7 @@ paths:
                       - href: >-
                           /ovirt-engine/api/affinitylabels/53524b11-a551-4af9-8f80-fc71bb6c21b6/vms
                         rel: vms
-  /ovirt-engine/api/affinitilabels/{label_id}:
+  /ovirt-engine/api/affinitylabels/{label_id}:
     get:
       tags:
         - affinitylabels
@@ -157,7 +157,7 @@ paths:
                     rel: vms
     put:
       tags:
-        - affinitilabels
+        - affinitylabels
       summary: Изменение существующей метки
       description: >-
         Обновление метки. Этот запрос позволяет обновить все метаданные, такие
@@ -205,7 +205,7 @@ paths:
                     rel: vms
     delete:
       tags:
-        - affinitilabels
+        - affinitylabels
       summary: Удаление существующей метки
       description: Удаление метки из системы и очистка всех назначений удаленной метки.
       security:
@@ -273,7 +273,7 @@ paths:
                 id: 99c8c1c9-20df-4aa4-aa3d-3e6c862986df
     get:
       tags:
-        - affinitilabels
+        - affinitylabels
       summary: Получение списка хостов с данной меткой
       description: |-
         Получение списка всех хостов с данной меткой.
@@ -437,7 +437,7 @@ paths:
     get:
       tags:
         - default
-      summary: affinitilabels/{label_id}/vms/{vm_id}
+      summary: affinitylabels/{label_id}/vms/{vm_id}
       description: Получение сведений о виртуальной машине, которой присвоена данная метка.
       security:
         - basicAuth: []
@@ -495,7 +495,7 @@ paths:
     delete:
       tags:
         - default
-      summary: affinitilabels/{label_id}/vms/{vm_id}
+      summary: affinitylabels/{label_id}/vms/{vm_id}
       description: Удаление метки с виртуальной машины.
       security:
         - basicAuth: []
