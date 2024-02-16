@@ -1,9 +1,10 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: zVirt REST API Guide
   version: 1.0.0
 servers:
   - url: https://he-engine.test-env.local
+  - url: https://sa-engine.test-env.local
 components:
   securitySchemes:
     basicAuth:
@@ -15,14 +16,82 @@ components:
 security:
   - oauth2Auth: []
 tags:
-  - name: affinitylabels
-    description: Метки сходства
+  - name: Авторизация
+    description: Сервисы, связанные с авторизацией
+  - name: Affinitylabels
+    description: Сервисы для работы с метками сходства
+  - name: Bookmarks
+    description: Сервисы для работы с закладками
+  - name: Clusterlevels
+    description: Сервисы для работы с уровнями совместимости кластеров
+  - name: Clusters
+    description: Сервисы для работы с кластерами
+  - name: Cpuprofiles
+    description: Сервисы для работы с профилями ЦП
 paths:
+  /ovirt-engine/sso/oauth/token:
+    post:
+      tags:
+        - Авторизация
+      summary: AccessToken
+      description: Запрос позволяет сформировать токен авторизации.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: grant_type
+          in: query
+          schema:
+            type: string
+          example: password
+        - name: scope
+          in: query
+          schema:
+            type: string
+          example: ovirt-app-api
+        - name: username
+          in: query
+          schema:
+            type: string
+          example: admin@internal
+        - name: password
+          in: query
+          schema:
+            type: integer
+          example: 'P@ssw0rd'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                access_token: >-
+                  I1d_93cNs6KYY0Z1WQ2XuTED_V-kd8Cjhasn60udiiQmEcGzMcKlwu7eZbtp9tpOJ3DN5SnpTNKgQ_2jbd-N_Q
+                scope: >-
+                  ovirt-app-api ovirt-ext=token-info:authz-search
+                  ovirt-ext=token-info:public-authz-search
+                  ovirt-ext=token-info:validate ovirt-ext=token:password-access
+                exp: '1708673129000'
+                token_type: bearer
   /ovirt-engine/api/affinitylabels:
     post:
       tags:
-        - affinitylabels
-      summary: Создание метки сходства
+        - Affinitylabels
+      summary: affinitilabels
       description: >-
         Создание новой метки. Метка автоматически прикрепляется ко всем
         сущностям, упомянутым в списках vms или hosts.
@@ -51,6 +120,11 @@ paths:
       responses:
         '201':
           description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
           content:
             application/json:
               schema:
@@ -71,8 +145,8 @@ paths:
                     rel: vms
     get:
       tags:
-        - affinitylabels
-      summary: Получение списка меток
+        - Affinitylabels
+      summary: affinitilabels
       description: |-
         Получение списка всех меток, присутствующих в системе.
 
@@ -83,11 +157,20 @@ paths:
           schema:
             type: string
           example: application/json
-        - name: max
-          in: path
+        - name: follow
+          in: query
           schema:
-            type: integer
-          example: 10
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, какое количество элементов списка выводить. Если не
+            указано - выводятся все.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -115,11 +198,11 @@ paths:
                       - href: >-
                           /ovirt-engine/api/affinitylabels/53524b11-a551-4af9-8f80-fc71bb6c21b6/vms
                         rel: vms
-  /ovirt-engine/api/affinitylabels/{label_id}:
+  /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d:
     get:
       tags:
-        - affinitylabels
-      summary: Получение сведений о конкретной метке
+        - Affinitylabels
+      summary: affinitilabels/{label_id}
       description: Получение подробной информации о метке.
       security:
         - basicAuth: []
@@ -129,14 +212,50 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:26:17 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 060b125f-45f2-4f70-bb0e-b59c778e2d97
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -155,10 +274,42 @@ paths:
                   - href: >-
                       /ovirt-engine/api/affinitylabels/53524b11-a551-4af9-8f80-fc71bb6c21b6/vms
                     rel: vms
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Wed, 14 Feb 2024 05:07:54 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Length:
+              schema:
+                type: integer
+                example: '0'
+            Correlation-Id:
+              schema:
+                type: string
+                example: 8bd14b85-6ed7-44a0-a507-0e7935750e3f
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: null
     put:
       tags:
-        - affinitylabels
-      summary: Изменение существующей метки
+        - Affinitylabels
+      summary: affinitilabels/{label_id}
       description: >-
         Обновление метки. Этот запрос позволяет обновить все метаданные, такие
         как название или описание.
@@ -181,10 +332,40 @@ paths:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:28:34 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 2f0d82ac-d157-41a8-8df5-dcfdaaa7f234
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -205,8 +386,8 @@ paths:
                     rel: vms
     delete:
       tags:
-        - affinitylabels
-      summary: Удаление существующей метки
+        - Affinitylabels
+      summary: affinitilabels/{label_id}
       description: Удаление метки из системы и очистка всех назначений удаленной метки.
       security:
         - basicAuth: []
@@ -220,22 +401,52 @@ paths:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:36:52 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 377c7b85-655b-43c5-9a59-91f1442f45ed
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/affinitylabels/{label_id}/hosts:
+  /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a/hosts:
     post:
       tags:
-        - affinitylabels
-      summary: Добавление метки к хосту
-      description: Позволяет добавить существующую метку к существующему хосту.
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/hosts
+      description: Добавление метки к хосту.
       requestBody:
         content:
           application/json:
@@ -260,10 +471,40 @@ paths:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:46:38 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 29e97968-d1b7-433a-b4b9-f8e2684bbccf
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -273,8 +514,8 @@ paths:
                 id: 99c8c1c9-20df-4aa4-aa3d-3e6c862986df
     get:
       tags:
-        - affinitylabels
-      summary: Получение списка хостов с данной меткой
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/hosts
       description: |-
         Получение списка всех хостов с данной меткой.
 
@@ -287,14 +528,50 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:55:19 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 26c67a83-3aae-4bb6-9a51-95d789a8d4fb
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -304,11 +581,11 @@ paths:
                   - href: >-
                       /ovirt-engine/api/hosts/99c8c1c9-20df-4aa4-aa3d-3e6c862986df
                     id: 99c8c1c9-20df-4aa4-aa3d-3e6c862986df
-  /ovirt-engine/api/affinitylabels/{label_id}/hosts/{host_id}:
+  /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208:
     get:
       tags:
-        - affinitylabels
-      summary: Получение сведений о хосте с указанной меткой
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/hosts/{host_id}
       description: Получение информации о хосте, которому назначена данная метка.
       security:
         - basicAuth: []
@@ -318,14 +595,48 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 16 Nov 2023 08:38:13 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 2de96c06-b931-4c39-a327-58c112634aca
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -333,11 +644,12 @@ paths:
               example:
                 href: /ovirt-engine/api/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
                 id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
+  /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d/hosts/99c8c1c9-20df-4aa4-aa3d-3e6c862986df:
     delete:
       tags:
-        - affinitylabels
-      summary: Удаление метки с хоста
-      description: Удаляет указанную метку с указанного хоста.
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/hosts/{host_id}
+      description: Удаление метки с хоста.
       security:
         - basicAuth: []
       parameters:
@@ -350,21 +662,51 @@ paths:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 14:57:01 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 4a29e642-7fb0-48e5-b770-5390cd2a4562
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/affinitylabels/{label_id}/vms:
+  /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d/vms:
     post:
       tags:
-        - affinitylabels
-      summary: Добавление метки к ВМ
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/vms
       description: Добавление метки к виртуальной машине.
       requestBody:
         content:
@@ -390,10 +732,40 @@ paths:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 15:02:46 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: ef02cf5c-c3ea-45b5-9f06-6fd9e4c54c8e
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -403,8 +775,8 @@ paths:
                 id: 0b370c6a-74e7-436f-9e4b-cdf5b633d147
     get:
       tags:
-        - affinitylabels
-      summary: Получение списка всех ВМ с указанной меткой
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/vms
       description: |-
         Получение списка всех виртуальных машин с данной меткой меткой.
 
@@ -417,14 +789,50 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
           headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 23 Oct 2023 15:04:55 GMT
+            Server:
+              schema:
+                type: string
+                example: >-
+                  Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+                  mod_wsgi/4.6.4 Python/3.6
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
             Content-Type:
               schema:
                 type: string
                 example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 1990fa20-4373-4037-a791-12e9d1a7c804
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
             application/json:
               schema:
@@ -436,8 +844,8 @@ paths:
   /ovirt-engine/api/affinitylabels/a24fe2d1-7707-4b90-924e-30ef19cb379d/vms/0b370c6a-74e7-436f-9e4b-cdf5b633d147:
     get:
       tags:
-        - default
-      summary: affinitylabels/{label_id}/vms/{vm_id}
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/vms/{vm_id}
       description: Получение сведений о виртуальной машине, которой присвоена данная метка.
       security:
         - basicAuth: []
@@ -447,6 +855,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -494,8 +908,8 @@ paths:
                 id: 0b370c6a-74e7-436f-9e4b-cdf5b633d147
     delete:
       tags:
-        - default
-      summary: affinitylabels/{label_id}/vms/{vm_id}
+        - Affinitylabels
+      summary: affinitilabels/{label_id}/vms/{vm_id}
       description: Удаление метки с виртуальной машины.
       security:
         - basicAuth: []
@@ -552,7 +966,7 @@ paths:
   /ovirt-engine/api/bookmarks:
     post:
       tags:
-        - default
+        - Bookmarks
       summary: bookmarks
       description: Добавление новой закладки.
       requestBody:
@@ -631,7 +1045,7 @@ paths:
                 id: c0ed0bbd-d963-4257-b1fc-964b24cd5367
     get:
       tags:
-        - default
+        - Bookmarks
       summary: bookmarks
       description: Получение списка всех имеющихся закладок.
       security:
@@ -642,6 +1056,20 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, какое количество элементов списка выводить. Если не
+            указано - выводятся все.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -694,7 +1122,7 @@ paths:
   /ovirt-engine/api/bookmarks/c0ed0bbd-d963-4257-b1fc-964b24cd5367:
     get:
       tags:
-        - default
+        - Bookmarks
       summary: bookmarks/{bookmark_id}
       description: Получение сведений о конкретной закладке.
       security:
@@ -705,6 +1133,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -755,7 +1189,7 @@ paths:
                 id: c0ed0bbd-d963-4257-b1fc-964b24cd5367
     put:
       tags:
-        - default
+        - Bookmarks
       summary: bookmarks/{bookmark_id}
       description: Изменение параметров закладки.
       requestBody:
@@ -829,7 +1263,7 @@ paths:
   /ovirt-engine/api/bookmarks/6e56d2b1-d6d9-4534-ad45-f41a0f34a0bd:
     delete:
       tags:
-        - default
+        - Bookmarks
       summary: bookmarks/{bookmark_id}
       description: Удаление закладки.
       security:
@@ -887,7 +1321,7 @@ paths:
   /ovirt-engine/api/clusterlevels:
     get:
       tags:
-        - default
+        - Clusterlevels
       summary: clusterlevels
       description: >-
         Получение списка уровней совместимости кластеров, поддерживаемых
@@ -900,6 +1334,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -3188,7 +3628,7 @@ paths:
   /ovirt-engine/api/clusterlevels/4.7:
     get:
       tags:
-        - default
+        - Clusterlevels
       summary: clusterlevels/{level_id}
       description: >-
         Получение информации о возможностях конкретного уровня совместимости
@@ -3201,6 +3641,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -3721,10 +4167,10 @@ paths:
                       id: '5000'
                 href: /ovirt-engine/api/clusterlevels/4.6
                 id: '4.6'
-  /ovirt-engine/api/clusterlevels/4.7/clusterfeatures:
+  /ovirt-engine/api/clusterlevels/4.6/clusterfeatures:
     get:
       tags:
-        - default
+        - Clusterlevels
       summary: clusterlevels/{level_id}/clusterfeatures
       description: >-
         Получение списка функций кластера, поддерживаемых на определённом уровне
@@ -3737,6 +4183,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: Successful response
@@ -3745,7 +4197,7 @@ paths:
   /ovirt-engine/api/clusterlevels/4.6/clusterfeatures/0b370c6a-74e7-436f-9e4b-cdf5b633d147:
     get:
       tags:
-        - default
+        - Clusterlevels
       summary: clusterlevels/{level_id}/clusterfeatures/{feature_id}
       description: >-
         Получение информации об определённой функции кластера, поддерживаемой на
@@ -3758,6 +4210,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: Successful response
@@ -3766,7 +4224,7 @@ paths:
   /ovirt-engine/api/clusters:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters
       description: |-
         Создание нового кластера.
@@ -3976,7 +4434,7 @@ paths:
                     rel: externalnetworkproviders
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters
       description: >-
         Получение списка кластеров системы.
@@ -3984,14 +4442,44 @@ paths:
 
         Порядок возвращаемых кластеров гарантируется только в том случае, если в
         параметр поиска включено условие sortby.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: case_sensitive
+          in: query
+          schema:
+            type: string
+          description: Указывает, должен ли поиск выполняться с учетом регистра.
+          example: Boolean
+        - name: filter
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, следует ли фильтровать результаты в соответствии с
+            правами пользователя.
+          example: Boolean
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых кластеров.
+          example: Integer
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Строка запроса, используемая для ограничения возвращаемых кластеров.
+          example: String
       responses:
         '200':
           description: OK
@@ -4156,17 +4644,29 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}
       description: Получение информации о кластере.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: filter
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, следует ли фильтровать результаты в соответствии с
+            правами пользователя.
+          example: Boolean
       responses:
         '200':
           description: OK
@@ -4327,7 +4827,7 @@ paths:
   /ovirt-engine/api/clusters/13ea92cf-3cae-4429-8b58-a6b76a7794f3:
     put:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}
       description: |-
         Изменение параметров кластера.
@@ -4340,8 +4840,6 @@ paths:
               type: object
               example:
                 comment: Updated comment
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -4353,6 +4851,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли обновление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
           description: OK
@@ -4516,11 +5020,9 @@ paths:
                     rel: externalnetworkproviders
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}
       description: Удаление кластера из системы.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -4532,6 +5034,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
           description: OK
@@ -4579,7 +5087,7 @@ paths:
   /ovirt-engine/api/clusters/1f290823-a15e-45ee-a131-89a6d3efcbc4/affinitygroups:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups
       description: Создание новой группы сходства.
       requestBody:
@@ -4597,8 +5105,6 @@ paths:
                   enabled: true
                   enforcing: false
                   positive: true
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -4702,20 +5208,30 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups
       description: |-
         Получение списка существующих групп сходства.
 
         Порядок в списке групп сходства не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: Boolean
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых групп сходства.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -4804,17 +5320,21 @@ paths:
   /ovirt-engine/api/clusters/1f290823-a15e-45ee-a131-89a6d3efcbc4/affinitygroups/5b448a0e-cf17-4e1f-832a-ccb148f23a7e:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}
       description: Получение сведений о группе сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -4901,7 +5421,7 @@ paths:
                     rel: hostlabels
     put:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}
       description: Изменение параметров группы сходства.
       requestBody:
@@ -4912,8 +5432,6 @@ paths:
               example:
                 hosts_rule:
                   enabled: 'false'
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -4925,6 +5443,12 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли обновление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
           description: OK
@@ -5012,17 +5536,21 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/e3b738b4-1831-44b1-b906-805078bc0137:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}
       description: Удаление группы сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: async
+          example: Boolean
       responses:
         '200':
           description: OK
@@ -5068,7 +5596,7 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/hostlabels:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hostlabels
       description: Добавление метки хоста в группу сродства.
       requestBody:
@@ -5078,8 +5606,6 @@ paths:
               type: object
               example:
                 id: add01970-e6af-401c-acdd-a71167978e4a
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -5133,22 +5659,33 @@ paths:
                 type: object
               example:
                 status: complete
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/hostlabels:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hostlabels
       description: |-
         Получение списка всех меткок хостов, назначенных данной группе сходства.
 
         Порядок возвращаемых меток не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых меток хоста.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -5198,26 +5735,66 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/hostlabels/add01970-e6af-401c-acdd-a71167978e4a:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hostlabels/{label_id}
       description: Удаление указанной метки из группы сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
-        '200':
-          description: Successful response
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 15 Feb 2024 15:43:51 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 3dae396e-8cee-4b64-8245-14e32822bfb0
+            Connection:
+              schema:
+                type: string
+                example: close
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: object
+              example:
+                detail: >-
+                  [Cannot edit Affinity Group. Provided LABEL is invalid (does
+                  not exist).]
+                reason: Operation Failed
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/hosts:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts
       description: Добавление хоста в группу сходства.
       requestBody:
@@ -5227,8 +5804,6 @@ paths:
               type: object
               example:
                 id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -5284,20 +5859,30 @@ paths:
                 status: complete
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts
       description: |-
         Получение списка всех хостов, присоединённых к данной группе сходства.
 
         Порядок в списке хостов не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых хостов.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -5344,29 +5929,70 @@ paths:
                     href: >-
                       /ovirt-engine/api/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
                     id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/hosts/70fa5523-8bb8-427a-8994-53e15b4889a4:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts/{host_id}
       description: Удаление хоста из группы сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
-          description: Successful response
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 15 Feb 2024 15:56:03 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: a2a8942a-29ea-49bc-a17f-01ccb616a4f3
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: object
+              example:
+                status: complete
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vmlabels:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels
       requestBody:
         content:
@@ -5375,8 +6001,6 @@ paths:
               type: object
               example:
                 id: add01970-e6af-401c-acdd-a71167978e4a
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -5432,7 +6056,7 @@ paths:
                 status: complete
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels
       description: >-
         Получение списка всех меток виртуальных машин, назначенных данной группе
@@ -5440,14 +6064,24 @@ paths:
 
 
         Порядок в списке меток не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых меток виртуальных машин.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -5497,26 +6131,66 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vmlabels/add01970-e6af-401c-acdd-a71167978e4a:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels/{label_id}
       description: Удаление указанной метки из группы сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
-        '200':
-          description: Successful response
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 15 Feb 2024 15:58:24 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: aa4ac8c7-e407-49f9-b56c-417cfe610458
+            Connection:
+              schema:
+                type: string
+                example: close
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
-            application/json: {}
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vms:
+            application/json:
+              schema:
+                type: object
+              example:
+                detail: >-
+                  [Cannot edit Affinity Group. Provided LABEL is invalid (does
+                  not exist).]
+                reason: Operation Failed
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/vms:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms
       description: Добавление виртуальной машины в группу сходства.
       requestBody:
@@ -5525,9 +6199,7 @@ paths:
             schema:
               type: object
               example:
-                id: 171547a9-bca0-4e99-ab67-cde603066e29
-      security:
-        - basicAuth: []
+                id: f3b81bf3-3785-4ae3-b2a1-4e65a254a7d0
       parameters:
         - name: Accept
           in: header
@@ -5583,20 +6255,30 @@ paths:
                 id: 171547a9-bca0-4e99-ab67-cde603066e29
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms
       description: |-
         Полученеи списка всех ВМ, присоединенных к данной группе сходства.
 
         Порядок в списке виртуальных машин не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых виртуальных машин.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -5642,14 +6324,12 @@ paths:
                   - name: VM-ovs
                     href: /ovirt-engine/api/vms/171547a9-bca0-4e99-ab67-cde603066e29
                     id: 171547a9-bca0-4e99-ab67-cde603066e29
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vms/171547a9-bca0-4e99-ab67-cde603066e29:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/vms/f3b81bf3-3785-4ae3-b2a1-4e65a254a7d0:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms/{vm_id}
       description: Удаление указанной ВМ из группы сходства.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -5661,15 +6341,58 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
-          description: Successful response
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 15 Feb 2024 16:04:12 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: a383b8cf-26e9-4de2-ba45-e71b87166333
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: object
+              example:
+                status: complete
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/cpuprofiles
       description: Добавление нового профиля ЦП в кластер.
       requestBody:
@@ -5678,8 +6401,6 @@ paths:
             schema:
               type: string
               example: '"{\r\n    \"name\": \"cpu_demo\"\r\n}"'
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -5745,22 +6466,33 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
                 id: bb8f62c2-ef92-4695-a9ce-038ff117e995
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/cpuprofiles
       description: |-
         Получение списка профилей ЦП, присоединённых к кластеру.
 
         Порядок в списке возвращаемых профилей ЦП не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых виртуальных машин.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -5822,19 +6554,23 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/cpuprofiles/{profile_id}
       description: >-
         Получение сведений об определённом профиле ЦП, присоединенном к
         кластеру.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -5884,15 +6620,87 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
                 id: bb8f62c2-ef92-4695-a9ce-038ff117e995
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles/d1779a5e-c3e0-4fc7-8268-3431e8f7f8d4:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/cpuprofiles/{profile_id}
       description: Удаление указаного профиля ЦП.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 07:42:05 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 2ead4c9f-510e-4d67-a8ee-a8345f6ce597
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: complete
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/enabledfeatures:
+    post:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/enabledfeatures
+      description: Включение дополнительной функции для кластера.
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n    \"name\": \"test_feature\",\r\n    \"comment\": \"Demo
+                add feature\",\r\n}"
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
           in: header
           schema:
             type: string
@@ -5903,53 +6711,31 @@ paths:
           content:
             application/json: {}
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/enabledfeatures:
-    post:
-      tags:
-        - default
-      summary: clusters/{cluster_id}/enabledfeatures
-      description: Включение дополнительной функции для кластера.
-      requestBody:
-        content:
-          '*/*':
-            schema:
-              type: string
-              example: '"{\r\n    \"name\": \"test_feature\"\r\n}"'
-      security:
-        - basicAuth: []
-      parameters:
-        - name: Accept
-          in: header
-          schema:
-            type: string
-          example: application/json
-        - name: Content-Type
-          in: header
-          schema:
-            type: string
-          example: application/json
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/enabledfeatures
       description: Получение списка всех дополнительных функции, включенных для кластера.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
-        - name: Content-Type
-          in: header
+        - name: follow
+          in: query
           schema:
             type: string
-          example: application/json
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, какое количество элементов списка выводить. Если не
+            указано - выводятся все.
+          example: Integer
       responses:
         '200':
           description: Successful response
@@ -5958,17 +6744,21 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/enabledfeatures/123:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/enabledfeatures/{feature_id}
       description: Получение информации об определённой дополнительной функции кластера.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: Successful response
@@ -5976,7 +6766,7 @@ paths:
             application/json: {}
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/enabledfeatures/{feature_id}
       description: Отключение функции кластера.
       security:
@@ -5987,28 +6777,46 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/externalnetworkproviders:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/externalnetworkproviders:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/externalnetworkproviders
       description: |-
         Получение списка внешних провайдеров.
 
         Порядок в возращаемом списке провайдеров не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, какое количество элементов списка выводить. Если не
+            указано - выводятся все.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -6073,20 +6881,32 @@ paths:
                     id: 22ed5f0a-5f01-421f-8860-e2f2603ca9b9
                     authentication_url: https://he-engine.test-env.local:35357/v2.0/
                     requires_authentication: 'true'
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networkfilters:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networkfilters:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networkfilters
       description: Получение списка сетевых фильтров, доступных для кластера.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: >-
+            Указывает, какое количество элементов списка выводить. Если не
+            указано - выводятся все.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -6258,17 +7078,21 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networkfilters/d2370ab4-fee3-11e9-a310-8c1645ce738e:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networkfilters/{nf_id}
       description: Полученеи информации об определённом сетевом фильтре.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -6317,10 +7141,10 @@ paths:
                 href: >-
                   /ovirt-engine/api/networkfilters/d2370ab4-fee3-11e9-a310-8c1645ce738e
                 id: d2370ab4-fee3-11e9-a310-8c1645ce738e
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networks
       description: Присоединение сети к кластеру.
       requestBody:
@@ -6329,8 +7153,6 @@ paths:
             schema:
               type: string
               example: '"{\r\n    \"name\": \"test_network\"\r\n}"'
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -6349,7 +7171,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Thu, 16 Nov 2023 12:47:06 GMT
+                example: Fri, 16 Feb 2024 07:57:00 GMT
             Server:
               schema:
                 type: string
@@ -6362,7 +7184,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233
+                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
             Content-Type:
               schema:
                 type: string
@@ -6370,7 +7192,7 @@ paths:
             Correlation-Id:
               schema:
                 type: string
-                example: 80afb0d4-f9c1-4ef4-9c72-5787175324e6
+                example: 08fda773-9892-497c-b477-c95406dffbc3
             Keep-Alive:
               schema:
                 type: string
@@ -6389,7 +7211,7 @@ paths:
                 type: object
               example:
                 display: 'false'
-                mtu: '0'
+                mtu: '1500'
                 port_isolation: 'false'
                 required: 'true'
                 status: non_operational
@@ -6400,34 +7222,45 @@ paths:
                 vdsm_name: test_network
                 cluster:
                   href: >-
-                    /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                  id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                    /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                  id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                 data_center:
                   href: >-
-                    /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720
-                  id: 39aa27aa-7ed6-11ee-8926-00163e712720
+                    /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7
+                  id: 565aaee8-5a49-40fe-9353-eb6e242fe0b7
                 name: test_network
                 description: Vm network
                 comment: ''
                 href: >-
-                  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233
-                id: 6fef49c0-91c5-4b61-9558-402d3692b233
+                  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
+                id: f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
+  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networks
       description: |-
         Перечисляет сети, присоединенные к кластеру.
 
         Порядок в списке возвращаемых сетей не гарантируется.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых сетей.
+          example: Integer
       responses:
         '200':
           description: OK
@@ -6525,17 +7358,21 @@ paths:
   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233:
     get:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networks/{network_id}
       description: Получение информации об определённой сети, присоединенной к кластеру.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
       responses:
         '200':
           description: OK
@@ -6603,7 +7440,7 @@ paths:
                 id: 6fef49c0-91c5-4b61-9558-402d3692b233
     put:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networks/{network_id}
       description: >-
         Изменение параметров логической сети, присоединенной к кластеру.
@@ -6618,8 +7455,6 @@ paths:
               type: object
               example:
                 required: 'false'
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
@@ -6696,34 +7531,70 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233
                 id: 6fef49c0-91c5-4b61-9558-402d3692b233
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/{network_id}:
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a:
     delete:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/networks/{network_id}
       description: Открепление логической сети от кластера.
-      security:
-        - basicAuth: []
       parameters:
         - name: Accept
           in: header
           schema:
             type: string
           example: application/json
-        - name: network_id
-          in: path
+        - name: async
+          in: query
           schema:
             type: string
-          required: true
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
       responses:
         '200':
-          description: Successful response
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:00:22 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 34e44d58-fe17-40d6-862b-3e8607c7c9fd
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
           content:
-            application/json: {}
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: complete
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions:
     post:
       tags:
-        - default
+        - Clusters
       summary: clusters/{cluster_id}/permissions
       description: Назначение нового разрешения пользователю или группе для кластера.
       requestBody:
@@ -6734,9 +7605,7 @@ paths:
               example: >-
                 "{\r\n    \"role\": {\r\n        \"name\": \"VmCreator\"\r\n   
                 },\r\n    \"user\": {\r\n        \"id\":
-                \"075161f9-0ca4-4aa6-844f-1e4d0d74ecc7\"\r\n    }\r\n}"
-      security:
-        - basicAuth: []
+                \"3093a9c8-c599-4384-ab95-f46ea5e01ab9\"\r\n    }\r\n}"
       parameters:
         - name: Accept
           in: header
@@ -6755,7 +7624,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Thu, 16 Nov 2023 13:52:15 GMT
+                example: Fri, 16 Feb 2024 08:03:34 GMT
             Server:
               schema:
                 type: string
@@ -6768,7 +7637,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7/permissions/37d5d14d-1f53-439b-b9f3-bb9a53b44541
+                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9/permissions/42db3492-954c-4c93-ac38-516a8fdee3ad
             Content-Type:
               schema:
                 type: string
@@ -6776,7 +7645,7 @@ paths:
             Correlation-Id:
               schema:
                 type: string
-                example: aab1315a-f5cf-424d-9225-41f2e4a11aee
+                example: 385a181d-f830-47f3-81cf-7cca55d97c09
             Keep-Alive:
               schema:
                 type: string
@@ -6796,38 +7665,24 @@ paths:
               example:
                 cluster:
                   href: >-
-                    /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                  id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                    /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                  id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                 role:
                   href: /ovirt-engine/api/roles/def0000a-0000-0000-0000-def00000000d
                   id: def0000a-0000-0000-0000-def00000000d
                 user:
-                  href: /ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
-                  id: 075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
+                  href: /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9
+                  id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
                 href: >-
-                  /ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7/permissions/37d5d14d-1f53-439b-b9f3-bb9a53b44541
-                id: 37d5d14d-1f53-439b-b9f3-bb9a53b44541
-    get:
-      tags:
-        - default
-      summary: clusters/{cluster_id}/permissions
-      description: Получение списка всех разрешений для кластера.
-      security:
-        - basicAuth: []
-      parameters:
-        - name: Accept
-          in: header
-          schema:
-            type: string
-          example: application/json
-      responses:
-        '200':
-          description: OK
+                  /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9/permissions/42db3492-954c-4c93-ac38-516a8fdee3ad
+                id: 42db3492-954c-4c93-ac38-516a8fdee3ad
+        '400':
+          description: Bad Request
           headers:
             Date:
               schema:
                 type: string
-                example: Thu, 16 Nov 2023 13:55:09 GMT
+                example: Fri, 16 Feb 2024 08:03:09 GMT
             Server:
               schema:
                 type: string
@@ -6843,7 +7698,69 @@ paths:
             Correlation-Id:
               schema:
                 type: string
-                example: 52dbd85f-f910-42a8-9160-ff03e635c77a
+                example: 36ee27ca-eac6-4e93-b602-1b4ff04564b8
+            Connection:
+              schema:
+                type: string
+                example: close
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                detail: '[]'
+                reason: Operation Failed
+    get:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/permissions
+      description: Получение списка всех разрешений для кластера.
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+        - name: max
+          in: query
+          schema:
+            type: string
+          description: Задает максимальное количество возвращаемых сетей.
+          example: Integer
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:04:42 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 69f06f84-bb02-4668-bb8c-ca1e75672dea
             Keep-Alive:
               schema:
                 type: string
@@ -6864,38 +7781,53 @@ paths:
                 permission:
                   - cluster:
                       href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
-                    role:
-                      href: >-
-                        /ovirt-engine/api/roles/00000000-0000-0000-0000-000000000001
-                      id: 00000000-0000-0000-0000-000000000001
-                    user:
-                      href: >-
-                        /ovirt-engine/api/users/930a5a1e-d015-4729-9e66-be3fb14c4e1b
-                      id: 930a5a1e-d015-4729-9e66-be3fb14c4e1b
-                    href: >-
-                      /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions/13cbf131-6835-4900-bcea-4dc732e139a1
-                    id: 13cbf131-6835-4900-bcea-4dc732e139a1
-                  - cluster:
-                      href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                     role:
                       href: >-
                         /ovirt-engine/api/roles/def0000a-0000-0000-0000-def00000000d
                       id: def0000a-0000-0000-0000-def00000000d
                     user:
                       href: >-
-                        /ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
-                      id: 075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
+                        /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9
+                      id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
                     href: >-
-                      /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions/37d5d14d-1f53-439b-b9f3-bb9a53b44541
-                    id: 37d5d14d-1f53-439b-b9f3-bb9a53b44541
+                      /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/42db3492-954c-4c93-ac38-516a8fdee3ad
+                    id: 42db3492-954c-4c93-ac38-516a8fdee3ad
                   - cluster:
                       href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                    group:
+                      href: >-
+                        /ovirt-engine/api/groups/4d8c4b84-c9ab-11ee-8657-00163e6814cb
+                      id: 4d8c4b84-c9ab-11ee-8657-00163e6814cb
+                    role:
+                      href: >-
+                        /ovirt-engine/api/roles/00000000-0000-0000-0000-000000000001
+                      id: 00000000-0000-0000-0000-000000000001
+                    href: >-
+                      /ovirt-engine/api/groups/4d8c4b84-c9ab-11ee-8657-00163e6814cb/permissions/4d8c643e-c9ab-11ee-8659-00163e6814cb
+                    id: 4d8c643e-c9ab-11ee-8659-00163e6814cb
+                  - cluster:
+                      href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                    role:
+                      href: >-
+                        /ovirt-engine/api/roles/00000000-0000-0000-0000-000000000001
+                      id: 00000000-0000-0000-0000-000000000001
+                    user:
+                      href: >-
+                        /ovirt-engine/api/users/5245ea5e-c9ab-11ee-865a-00163e6814cb
+                      id: 5245ea5e-c9ab-11ee-865a-00163e6814cb
+                    href: >-
+                      /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/5245f800-c9ab-11ee-865b-00163e6814cb
+                    id: 5245f800-c9ab-11ee-865b-00163e6814cb
+                  - cluster:
+                      href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                     group:
                       href: >-
                         /ovirt-engine/api/groups/eee00000-0000-0000-0000-123456789eee
@@ -6909,64 +7841,687 @@ paths:
                     id: 58ca605c-010d-0307-0224-0000000001a9
                   - cluster:
                       href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
-                    group:
-                      href: >-
-                        /ovirt-engine/api/groups/59d99a9c-7ed6-11ee-82d6-00163e712720
-                      id: 59d99a9c-7ed6-11ee-82d6-00163e712720
-                    role:
-                      href: >-
-                        /ovirt-engine/api/roles/00000000-0000-0000-0000-000000000001
-                      id: 00000000-0000-0000-0000-000000000001
-                    href: >-
-                      /ovirt-engine/api/groups/59d99a9c-7ed6-11ee-82d6-00163e712720/permissions/59d9b5ea-7ed6-11ee-82d8-00163e712720
-                    id: 59d9b5ea-7ed6-11ee-82d8-00163e712720
-                  - cluster:
-                      href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                     role:
                       href: >-
                         /ovirt-engine/api/roles/00000000-0000-0000-0000-000000000001
                       id: 00000000-0000-0000-0000-000000000001
                     user:
                       href: >-
-                        /ovirt-engine/api/users/5ee78260-7ed6-11ee-82d9-00163e712720
-                      id: 5ee78260-7ed6-11ee-82d9-00163e712720
+                        /ovirt-engine/api/users/36423f11-672f-4713-8956-2ab72775a8b0
+                      id: 36423f11-672f-4713-8956-2ab72775a8b0
                     href: >-
-                      /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions/5ee78e54-7ed6-11ee-82da-00163e712720
-                    id: 5ee78e54-7ed6-11ee-82da-00163e712720
+                      /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/c0463688-ddf8-4cdd-a7b9-d7cb2efea473
+                    id: c0463688-ddf8-4cdd-a7b9-d7cb2efea473
                   - cluster:
                       href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
                     role:
                       href: >-
-                        /ovirt-engine/api/roles/00000000-0000-0000-0001-000000000001
-                      id: 00000000-0000-0000-0001-000000000001
+                        /ovirt-engine/api/roles/def00001-0000-0000-0000-def000000001
+                      id: def00001-0000-0000-0000-def000000001
                     user:
                       href: >-
-                        /ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
-                      id: 075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
+                        /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9
+                      id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
                     href: >-
-                      /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions/7d2331d1-d934-48c4-a781-1afc517d0ccc
-                    id: 7d2331d1-d934-48c4-a781-1afc517d0ccc
-                  - cluster:
+                      /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144c
+                    id: dd10a76c-1a90-458e-9ba3-3c01fa39144c
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:10:33 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Length:
+              schema:
+                type: integer
+                example: '226'
+            Connection:
+              schema:
+                type: string
+                example: close
+            Content-Type:
+              schema:
+                type: string
+                example: text/html; charset=iso-8859-1
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |-
+                <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+                <html>
+                    <head>
+                        <title>400 Bad Request</title>
+                    </head>
+                    <body>
+                        <h1>Bad Request</h1>
+                        <p>Your browser sent a request that this server could not understand.
+                            <br />
+                        </p>
+                    </body>
+                </html>
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144:
+    get:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/permissions/{permission_id}
+      description: Получение сведений об указанном разрешении в кластере
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: follow
+          in: query
+          schema:
+            type: string
+          description: Указывает, какие вложенные ссылки раскрывать.
+          example: String
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:10:04 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: b74d6093-c2b4-419c-8f97-5eff6f1107c4
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                cluster:
+                  href: >-
+                    /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                  id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                role:
+                  href: /ovirt-engine/api/roles/def00001-0000-0000-0000-def000000001
+                  id: def00001-0000-0000-0000-def000000001
+                user:
+                  href: /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9
+                  id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
+                href: >-
+                  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144c
+                id: dd10a76c-1a90-458e-9ba3-3c01fa39144c
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:10:16 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Length:
+              schema:
+                type: integer
+                example: '0'
+            Correlation-Id:
+              schema:
+                type: string
+                example: b0c53f23-5734-452e-bd3e-502a5a5b80fa
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: null
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144c:
+    delete:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/permissions/{permission_id}
+      description: Удаление указанного разрешения из кластера
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должно ли удаление выполняться асинхронно.
+          example: Boolean
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:14:46 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 467fc0fd-1c57-45cc-bc7b-2bd81c169cd7
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: complete
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:12:45 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Length:
+              schema:
+                type: integer
+                example: '226'
+            Connection:
+              schema:
+                type: string
+                example: close
+            Content-Type:
+              schema:
+                type: string
+                example: text/html; charset=iso-8859-1
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |-
+                <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+                <html>
+                    <head>
+                        <title>400 Bad Request</title>
+                    </head>
+                    <body>
+                        <h1>Bad Request</h1>
+                        <p>Your browser sent a request that this server could not understand.
+                            <br />
+                        </p>
+                    </body>
+                </html>
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:13:19 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Length:
+              schema:
+                type: integer
+                example: '0'
+            Correlation-Id:
+              schema:
+                type: string
+                example: a74e23cf-3fd4-4e4a-b7b2-c2e3932e8a1b
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: null
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/resetemulatedmachine:
+    post:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/resetemulatedmachine
+      description: >-
+        Сброс эмулируемой машины.
+
+
+        Соответствует операции в UI Кластеры - Доп. действия - Сбросить
+        эмулируемую машину.
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{}"'
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должна ли операция выполняться асинхронно.
+          example: Boolean
+      responses:
+        '409':
+          description: Conflict
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:46:54 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 48eb4811-8e02-432b-9bc8-8696c5fd5bb8
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                fault:
+                  detail: >-
+                    [Cannot update Cluster. Clusters hosts must be down in order
+                    to perform this action.]
+                  reason: Operation Failed
+                status: failed
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/syncallnetworks:
+    post:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/syncallnetworks
+      description: >-
+        Синхронизация всех сетей кластера.
+
+
+        Соответствует операции в UI Кластеры -> Подробное представление ->
+        Логические сети -> Синхронизация всех сетей
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{}"'
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: async
+          in: query
+          schema:
+            type: string
+          description: Указывает, должна ли операция выполняться асинхронно.
+          example: Boolean
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:35:04 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 0ba166f9-4a17-40ba-9c4e-1e1fa8c742a0
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                cluster:
+                  actions:
+                    link:
+                      - href: >-
+                          /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/resetemulatedmachine
+                        rel: resetemulatedmachine
+                      - href: >-
+                          /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/syncallnetworks
+                        rel: syncallnetworks
+                      - href: >-
+                          /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/refreshglusterhealstatus
+                        rel: refreshglusterhealstatus
+                      - href: >-
+                          /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/upgrade
+                        rel: upgrade
+                  link:
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networkfilters
+                      rel: networkfilters
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks
+                      rel: networks
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups
+                      rel: affinitygroups
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glusterhooks
+                      rel: glusterhooks
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glustervolumes
+                      rel: glustervolumes
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/enabledfeatures
+                      rel: enabledfeatures
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/externalnetworkproviders
+                      rel: externalnetworkproviders
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions
+                      rel: permissions
+                    - href: >-
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles
+                      rel: cpuprofiles
+                  href: >-
+                    /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                  id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                job:
+                  href: /ovirt-engine/api/jobs/0857072a-1d71-4c85-abe2-943e6a473f86
+                  id: 0857072a-1d71-4c85-abe2-943e6a473f86
+                status: complete
+  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/upgrade:
+    post:
+      tags:
+        - Clusters
+      summary: clusters/{cluster_id}/upgrade
+      description: >-
+        Запуск или завершение процесса обновления для кластера на основе
+        значения, переданного в ключе **upgrade_action**. Это действие помечает
+        кластер для обновления или снимает флаг выполнения обновления.
+        Допустимые значения ключа **upgrade_action:** start и finish.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                upgrade_action: start
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Feb 2024 08:45:02 GMT
+            Server:
+              schema:
+                type: string
+                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Correlation-Id:
+              schema:
+                type: string
+                example: 39c83f68-5a82-48b9-9762-203825140b52
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5, max=100
+            Connection:
+              schema:
+                type: string
+                example: Keep-Alive
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: 200 OK start
+                  value:
+                    cluster:
+                      actions:
+                        link:
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/resetemulatedmachine
+                            rel: resetemulatedmachine
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/syncallnetworks
+                            rel: syncallnetworks
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/refreshglusterhealstatus
+                            rel: refreshglusterhealstatus
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/upgrade
+                            rel: upgrade
+                      link:
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networkfilters
+                          rel: networkfilters
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks
+                          rel: networks
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups
+                          rel: affinitygroups
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glusterhooks
+                          rel: glusterhooks
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glustervolumes
+                          rel: glustervolumes
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/enabledfeatures
+                          rel: enabledfeatures
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/externalnetworkproviders
+                          rel: externalnetworkproviders
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions
+                          rel: permissions
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles
+                          rel: cpuprofiles
                       href: >-
-                        /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897
-                      id: 9bbf76bd-b656-4749-b0b9-b406cca3a897
-                    role:
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                    status: complete
+                    upgrade_action: start
+                example-1:
+                  summary: 200 OK finish
+                  value:
+                    cluster:
+                      actions:
+                        link:
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/resetemulatedmachine
+                            rel: resetemulatedmachine
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/syncallnetworks
+                            rel: syncallnetworks
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/refreshglusterhealstatus
+                            rel: refreshglusterhealstatus
+                          - href: >-
+                              /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/upgrade
+                            rel: upgrade
+                      link:
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networkfilters
+                          rel: networkfilters
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks
+                          rel: networks
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups
+                          rel: affinitygroups
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glusterhooks
+                          rel: glusterhooks
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/glustervolumes
+                          rel: glustervolumes
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/enabledfeatures
+                          rel: enabledfeatures
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/externalnetworkproviders
+                          rel: externalnetworkproviders
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions
+                          rel: permissions
+                        - href: >-
+                            /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles
+                          rel: cpuprofiles
                       href: >-
-                        /ovirt-engine/api/roles/def00021-0000-0000-0000-def000000015
-                      id: def00021-0000-0000-0000-def000000015
-                    user:
-                      href: >-
-                        /ovirt-engine/api/users/075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
-                      id: 075161f9-0ca4-4aa6-844f-1e4d0d74ecc7
-                    href: >-
-                      /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/permissions/c31260bd-2c3b-47ef-8e30-2f51e177fbdf
-                    id: c31260bd-2c3b-47ef-8e30-2f51e177fbdf
+                        /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                      id: 7b50a25e-2ef3-46f4-b446-c950eb53c18d
+                    status: complete
+                    upgrade_action: finish
   /ovirt-engine/api/datacenters:
     get:
       tags:
@@ -7244,11 +8799,9 @@ paths:
               type: string
               example: >-
                 "{\r\n    \"name\": \"test_network\",\r\n    \"data_center\":
-                {\r\n        \"name\": \"Default\"\r\n    },\r\n   
+                {\r\n        \"name\": \"SDNDC\"\r\n    },\r\n   
                 \"description\": \"Vm network\",\r\n    \"usages\" : {\r\n     
-                \"usage\" : [ \"vm\" ]\r\n    }\r\n}"
-      security:
-        - basicAuth: []
+                \"usage\" : [ \"vm\" ]\r\n    },\r\n    \"mtu\": \"1500\"\r\n}"
       parameters:
         - name: Accept
           in: header
@@ -7267,7 +8820,7 @@ paths:
             Date:
               schema:
                 type: string
-                example: Thu, 16 Nov 2023 12:45:06 GMT
+                example: Fri, 16 Feb 2024 07:55:52 GMT
             Server:
               schema:
                 type: string
@@ -7280,7 +8833,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720/networks/6fef49c0-91c5-4b61-9558-402d3692b233
+                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
             Content-Type:
               schema:
                 type: string
@@ -7288,7 +8841,7 @@ paths:
             Correlation-Id:
               schema:
                 type: string
-                example: f00416a5-ac45-4f6c-9edd-726b5450dfcb
+                example: 5143cdcb-aed1-4b42-b8b8-de9d1c6270b8
             Keep-Alive:
               schema:
                 type: string
@@ -7306,7 +8859,7 @@ paths:
               schema:
                 type: object
               example:
-                mtu: '0'
+                mtu: '1500'
                 port_isolation: 'false'
                 stp: 'false'
                 usages:
@@ -7315,24 +8868,24 @@ paths:
                 vdsm_name: test_network
                 data_center:
                   href: >-
-                    /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720
-                  id: 39aa27aa-7ed6-11ee-8926-00163e712720
+                    /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7
+                  id: 565aaee8-5a49-40fe-9353-eb6e242fe0b7
                 name: test_network
                 description: Vm network
                 comment: ''
                 link:
                   - href: >-
-                      /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720/networks/6fef49c0-91c5-4b61-9558-402d3692b233/permissions
+                      /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a/networklabels
+                    rel: networklabels
+                  - href: >-
+                      /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a/permissions
                     rel: permissions
                   - href: >-
-                      /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720/networks/6fef49c0-91c5-4b61-9558-402d3692b233/vnicprofiles
+                      /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a/vnicprofiles
                     rel: vnicprofiles
-                  - href: >-
-                      /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720/networks/6fef49c0-91c5-4b61-9558-402d3692b233/networklabels
-                    rel: networklabels
                 href: >-
-                  /ovirt-engine/api/datacenters/39aa27aa-7ed6-11ee-8926-00163e712720/networks/6fef49c0-91c5-4b61-9558-402d3692b233
-                id: 6fef49c0-91c5-4b61-9558-402d3692b233
+                  /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
+                id: f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
   /ovirt-engine/api/vms:
     get:
       tags:
@@ -8093,6 +9646,11 @@ paths:
           schema:
             type: string
           example: application/json
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: name=he-host-1.test-env.local
       responses:
         '200':
           description: OK
@@ -8749,47 +10307,6 @@ paths:
                       - href: >-
                           /ovirt-engine/api/hosts/117147e7-0c7a-4aff-8f3e-c1da45a0ff27/statistics
                         rel: statistics
-  /ovirt-engine/sso/oauth/token:
-    post:
-      tags:
-        - default
-      summary: AccessToken
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-      parameters:
-        - name: Accept
-          in: header
-          schema:
-            type: string
-          example: application/json
-        - name: grant_type
-          in: query
-          schema:
-            type: string
-          example: password
-        - name: scope
-          in: query
-          schema:
-            type: string
-          example: ovirt-app-api
-        - name: username
-          in: query
-          schema:
-            type: string
-          example: admin@internal
-        - name: password
-          in: query
-          schema:
-            type: integer
-          example: '1'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
   /ovirt-engine/api/hosts/99c8c1c9-20df-4aa4-aa3d-3e6c862986df:
     get:
       tags:
@@ -10419,11 +11936,6 @@ paths:
           schema:
             type: string
           example: application/json
-        - name: search
-          in: query
-          schema:
-            type: string
-          example: usrname=demo-user
       responses:
         '200':
           description: OK
@@ -10502,7 +12014,7 @@ paths:
               example:
                 name: test group
                 domain:
-                  name: internal-authz
+                  id: 696E7465726E616C2D617574687A
       parameters:
         - name: Accept
           in: header
@@ -10535,6 +12047,17 @@ paths:
           schema:
             type: string
           example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /ovirt-engine/api/vms/844dcc04-da3f-4694-9d11-5ac98fa7a1d8/ticket:
+    get:
+      tags:
+        - default
+      summary: >-
+        https://he-engine.test-env.local/ovirt-engine/api/vms/844dcc04-da3f-4694-9d11-5ac98fa7a1d8/ticket
       responses:
         '200':
           description: Successful response
