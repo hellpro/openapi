@@ -1,18 +1,11 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   title: zVirt REST API Guide
   version: 1.0.0
 servers:
   - url: https://he-engine.test-env.local
   - url: https://sa-engine.test-env.local
-components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    oauth2Auth:
-      type: http
-      scheme: oauth2
+
 security:
   - oauth2Auth: []
 tags:
@@ -97,10 +90,7 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                name: AFL-001
-                comment: Affinity label 001
-                description: Demo label
+              $ref: "#/components/schemas/AffinityLabel"
       security:
         - basicAuth: []
       parameters:
@@ -169,7 +159,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/AffinityLabel"
               example:
                 affinity_label:
                   - has_implicit_affinity_group: 'false'
@@ -212,6 +204,7 @@ paths:
             application/json:
               schema:
                 type: object
+                $ref: "#/components/schemas/AffinityLabel"
               example:
                 has_implicit_affinity_group: 'false'
                 read_only: 'false'
@@ -245,8 +238,7 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                comment: Update comment
+              $ref: "#/components/schemas/AffinityLabel"
       security:
         - basicAuth: []
       parameters:
@@ -3251,7 +3243,7 @@ paths:
                     href: >-
                       /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a
                     id: add01970-e6af-401c-acdd-a71167978e4a
-  clusters/{cluster_id}/affinitygroups/{afg_id}/hostlabels/{label_id}:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/hostlabels/{label_id}:
     delete:
       tags:
         - Кластеры
@@ -10929,3 +10921,39 @@ paths:
           description: Successful response
           content:
             application/json: {}
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    oauth2Auth:
+      type: http
+      scheme: oauth2
+  schemas:
+    AffinityLabel:
+      type: object
+      description: Метка сходства может влиять на планирование виртуальных машин. Чаще всего используется для создания подкластера из доступных хостов.
+      properties: 
+        comment:
+          type: string
+          description: Произвольный текст, содержащий комментарии об этом объекте.
+        description: 
+          type: string
+          description: Удобочитаемое описание в виде обычного текста.
+        has_implicit_affinity_group:
+          type: boolean
+          description: |
+            Это свойство включает устаревшее поведение для меток. Если true, метка также действует как принудительная группа сходства между виртуальными машинами и хостом.
+
+            Этот параметр используется только для кластеров с версией совместимости 4.3 или ниже.
+        id:
+          type: string
+          description: Уникальный идентификатор.
+        name:
+          type: string
+          description: Удобочитаемое имя в виде обычного текста.
+        read_only:
+          type: boolean
+          description: Свойство read_only указывает на метку, которую нельзя изменить. Обычно это происходит при перечислении меток, созданных внутри компании.
+      required: 
+        - name
