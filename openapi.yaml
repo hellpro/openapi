@@ -3277,8 +3277,8 @@ paths:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts
-      description: Добавление хоста в группу сходства.
+      summary: Добавление хоста в группу сходства
+      description: Добавляет в указанную группу сходства хост, ID которого передан в теле запроса.
       requestBody:
         content:
           application/json:
@@ -3300,39 +3300,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:45:23 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 23d4aacc-a4f1-4a34-881e-b3541157f184
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3342,9 +3309,9 @@ paths:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts
+      summary: Получение списка хостов в группе сходства
       description: |-
-        Получение списка всех хостов, присоединённых к данной группе сходства.
+        Возвращает список хостов указанного кластера, принадлежащих указанной группе сходства.
 
         Порядок в списке хостов не гарантируется.
       parameters:
@@ -3362,39 +3329,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:46:01 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: c1714ce1-05e2-4f51-b4db-cbae33e8b4db
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3405,12 +3339,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/hosts/4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
                     id: 4d2ab87a-bfd8-4a75-8a4c-b30df2bba208
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/hosts/70fa5523-8bb8-427a-8994-53e15b4889a4:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/hosts/{host_id}:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/hosts/{host_id}
-      description: Удаление хоста из группы сходства.
+      summary: Удаление хоста из группы сходства
+      description: Удаляет указанный хост из указанной группы сходства в кластере.
       parameters:
         - name: Accept
           in: header
@@ -3426,50 +3360,18 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 15 Feb 2024 15:56:03 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: a2a8942a-29ea-49bc-a17f-01ccb616a4f3
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vmlabels:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels
+      summary: Добавление метки ВМ
+      description: Добавляет метку сходства ВМ, ID которой указан в теле запроса, к указанной группе сходства в указанном кластере.
       requestBody:
         content:
           application/json:
@@ -3491,39 +3393,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:50:58 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: d8e0e55f-0bf5-4064-98c6-63f4820cc345
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3533,11 +3402,10 @@ paths:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels
+      summary: Получение списка меток ВМ
       description: >-
-        Получение списка всех меток виртуальных машин, назначенных данной группе
+        Возвращает список всех меток виртуальных машин, назначенных данной группе
         сходства.
-
 
         Порядок в списке меток не гарантируется.
       parameters:
@@ -3555,39 +3423,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:52:03 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: a3872a9d-1f68-4d44-9438-c019c51767ac
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3598,12 +3433,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/affinitylabels/add01970-e6af-401c-acdd-a71167978e4a
                     id: add01970-e6af-401c-acdd-a71167978e4a
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/affinitygroups/5c290e23-51bd-46f4-8985-2e4c9b6ff144/vmlabels/add01970-e6af-401c-acdd-a71167978e4a:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels/{label_id}:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vmlabels/{label_id}
-      description: Удаление указанной метки из группы сходства.
+      summary: Удаление метки ВМ из группы сходства
+      description: Удаляет указанную метку сходства ВМ из указанной группы сходства.
       parameters:
         - name: Accept
           in: header
@@ -3619,35 +3454,6 @@ paths:
       responses:
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 15 Feb 2024 15:58:24 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: aa4ac8c7-e407-49f9-b56c-417cfe610458
-            Connection:
-              schema:
-                type: string
-                example: close
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3657,12 +3463,12 @@ paths:
                   [Cannot edit Affinity Group. Provided LABEL is invalid (does
                   not exist).]
                 reason: Operation Failed
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/vms:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/vms:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms
-      description: Добавление виртуальной машины в группу сходства.
+      summary: Добавление ВМ в группу сходства
+      description: Добавляет в указанную группу сходства ВМ, ID которой передан в теле запроса.
       requestBody:
         content:
           application/json:
@@ -3684,39 +3490,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:57:14 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 529ca1bc-1ee8-4af8-b084-d219f776488a
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3726,9 +3499,9 @@ paths:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms
+      summary: Получение списка ВМ в группе сходства
       description: |-
-        Полученеи списка всех ВМ, присоединенных к данной группе сходства.
+        Возвращает список всех ВМ, присоединенных к данной группе сходства.
 
         Порядок в списке виртуальных машин не гарантируется.
       parameters:
@@ -3746,39 +3519,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Tue, 14 Nov 2023 13:58:02 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 052519b8-88c8-4a39-b098-f5b84818305e
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3788,12 +3528,12 @@ paths:
                   - name: VM-ovs
                     href: /ovirt-engine/api/vms/171547a9-bca0-4e99-ab67-cde603066e29
                     id: 171547a9-bca0-4e99-ab67-cde603066e29
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/affinitygroups/d4426645-3d5f-4415-917b-c6c77b963806/vms/f3b81bf3-3785-4ae3-b2a1-4e65a254a7d0:
+  /ovirt-engine/api/clusters/{cluster_id}/affinitygroups/{afg_id}/vms/{vm_id}:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/affinitygroups/{afg_id}/vms/{vm_id}
-      description: Удаление указанной ВМ из группы сходства.
+      summary: Удаление ВМ из группы сходства
+      description: Удаляет указанную ВМ из указанной группы сходства в кластере.
       parameters:
         - name: Accept
           in: header
@@ -3814,57 +3554,25 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 15 Feb 2024 16:04:12 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: a383b8cf-26e9-4de2-ba45-e71b87166333
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles:
+  /ovirt-engine/api/clusters/{cluster_id}/cpuprofiles:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/cpuprofiles
-      description: Добавление нового профиля ЦП в кластер.
+      summary: Добавление профиля ЦП
+      description: Добавляет в указанный кластер новый профиль ЦП с указанными параметрами.
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: '"{\r\n    \"name\": \"cpu_demo\"\r\n}"'
+              type: object
+              example:
+                name: cpu_demo
       parameters:
         - name: Accept
           in: header
@@ -3879,44 +3587,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Wed, 15 Nov 2023 08:31:27 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: de6ce970-3915-4ffc-89c1-730d5aee5f66
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -3930,13 +3600,12 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
                 id: bb8f62c2-ef92-4695-a9ce-038ff117e995
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/cpuprofiles
+      summary: Получение списка профилей ЦП в кластере
       description: |-
-        Получение списка профилей ЦП, присоединённых к кластеру.
+        Возвращает список всех профилей ЦП, присоединённых к кластеру.
 
         Порядок в списке возвращаемых профилей ЦП не гарантируется.
       parameters:
@@ -3954,39 +3623,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Wed, 15 Nov 2023 08:31:56 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 7534a10c-fab9-4619-91b6-31c4d0d24c0a
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4009,13 +3645,13 @@ paths:
                     href: >-
                       /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
                     id: bb8f62c2-ef92-4695-a9ce-038ff117e995
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995:
+  /ovirt-engine/api/clusters/{cluster_id}/cpuprofiles/{profile_id}:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/cpuprofiles/{profile_id}
+      summary: Получение сведений о профиле ЦП
       description: >-
-        Получение сведений об определённом профиле ЦП, присоединенном к
+        Возвращает информацию об определённом профиле ЦП, присоединенном к
         кластеру.
       parameters:
         - name: Accept
@@ -4026,39 +3662,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Wed, 15 Nov 2023 08:34:41 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 69ecfd96-f7d7-4403-80e8-e305983b029c
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4072,12 +3675,11 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/cpuprofiles/bb8f62c2-ef92-4695-a9ce-038ff117e995
                 id: bb8f62c2-ef92-4695-a9ce-038ff117e995
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles/d1779a5e-c3e0-4fc7-8268-3431e8f7f8d4:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/cpuprofiles/{profile_id}
-      description: Удаление указаного профиля ЦП.
+      summary: Удаление профиля ЦП
+      description: Удаляет указанный профиль ЦП.
       parameters:
         - name: Accept
           in: header
@@ -4093,59 +3695,26 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 07:42:05 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 2ead4c9f-510e-4d67-a8ee-a8345f6ce597
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/enabledfeatures:
+  /ovirt-engine/api/clusters/{cluster_id}/enabledfeatures:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/enabledfeatures
-      description: Включение дополнительной функции для кластера.
+      summary: Создание дополнительной функции кластера
+      description: Создает новую функцию кластера с указанными параметрами.
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: >-
-                "{\r\n    \"name\": \"test_feature\",\r\n    \"comment\": \"Demo
-                add feature\",\r\n}"
+              type: object
+              example:
+                name: test_feature
+                comment: Demo add feature
       parameters:
         - name: Accept
           in: header
@@ -4162,12 +3731,11 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/enabledfeatures:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/enabledfeatures
-      description: Получение списка всех дополнительных функции, включенных для кластера.
+      summary: Получение списка дополнительных функции кластера
+      description: Возвращает список всех дополнительных функции, включенных для кластера.
       parameters:
         - name: Accept
           in: header
@@ -4187,12 +3755,12 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/enabledfeatures/123:
+  /ovirt-engine/api/clusters/{cluster_id}/enabledfeatures/{feature_id}:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/enabledfeatures/{feature_id}
-      description: Получение информации об определённой дополнительной функции кластера.
+      summary: Получение информации о дополнительной функции
+      description: Возвращает информацию об указанной дополнительной функции кластера.
       parameters:
         - name: Accept
           in: header
@@ -4207,8 +3775,8 @@ paths:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/enabledfeatures/{feature_id}
-      description: Отключение функции кластера.
+      summary: Удаление дополнительной функции
+      description: Отключает указанную дополнительную функцию кластера.
       security:
         - basicAuth: []
       parameters:
@@ -4228,13 +3796,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/externalnetworkproviders:
+  /ovirt-engine/api/clusters/{cluster_id}/externalnetworkproviders:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/externalnetworkproviders
+      summary: Получение списка внешних провайдеров.
       description: |-
-        Получение списка внешних провайдеров.
+        Возвращает список внешних провайдеров, настроенных для кластера.
 
         Порядок в возращаемом списке провайдеров не гарантируется.
       parameters:
@@ -4254,39 +3822,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 08:20:28 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: dee69b6c-dc76-4a0b-b4f9-91e19952f5cb
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4315,12 +3850,12 @@ paths:
                     id: 22ed5f0a-5f01-421f-8860-e2f2603ca9b9
                     authentication_url: https://he-engine.test-env.local:35357/v2.0/
                     requires_authentication: 'true'
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networkfilters:
+  /ovirt-engine/api/clusters/{cluster_id}/networkfilters:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networkfilters
-      description: Получение списка сетевых фильтров, доступных для кластера.
+      summary: Получение списка сетевых фильтров
+      description: Возвращает список сетевых фильтров, доступных для кластера.
       parameters:
         - name: Accept
           in: header
@@ -4338,39 +3873,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 12:29:32 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 8af34eee-4aae-4322-862e-93f9f5388413
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4503,12 +4005,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/networkfilters/44d173e0-7ed6-11ee-bc18-00163e712720
                     id: 44d173e0-7ed6-11ee-bc18-00163e712720
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networkfilters/d2370ab4-fee3-11e9-a310-8c1645ce738e:
+  /ovirt-engine/api/clusters/{cluster_id}/networkfilters/{nf_id}:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networkfilters/{nf_id}
-      description: Полученеи информации об определённом сетевом фильтре.
+      summary: Получение информации о сетевом фильтре
+      description: Возвращает информацию об указанном сетевом фильтре.
       parameters:
         - name: Accept
           in: header
@@ -4518,39 +4020,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 12:32:55 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 38f237f0-96bc-4707-b3a9-98f1fd2a0d11
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4563,18 +4032,19 @@ paths:
                 href: >-
                   /ovirt-engine/api/networkfilters/d2370ab4-fee3-11e9-a310-8c1645ce738e
                 id: d2370ab4-fee3-11e9-a310-8c1645ce738e
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks:
+  /ovirt-engine/api/clusters/{cluster_id}/networks:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networks
-      description: Присоединение сети к кластеру.
+      summary: Присоединение сети к кластеру
+      description: Присоединяет к указанному кластеру логическую сеть, ID или имя которой передано в теле запроса.
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: '"{\r\n    \"name\": \"test_network\"\r\n}"'
+              type: object
+              example:
+                name: test_network
       parameters:
         - name: Accept
           in: header
@@ -4589,44 +4059,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 07:57:00 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 08fda773-9892-497c-b477-c95406dffbc3
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4656,13 +4088,12 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
                 id: f9dfdcd8-4e78-4109-82ec-01b5473b4f6a
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networks
+      summary: Полученеи списка сетей кластера
       description: |-
-        Перечисляет сети, присоединенные к кластеру.
+        Возвращает список сетей, присоединенных к кластеру.
 
         Порядок в списке возвращаемых сетей не гарантируется.
       parameters:
@@ -4680,39 +4111,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 12:49:16 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 6960a704-3910-4856-b94a-2e61aaae3631
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4771,12 +4169,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233
                     id: 6fef49c0-91c5-4b61-9558-402d3692b233
-  /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233:
+  /ovirt-engine/api/clusters/{cluster_id}/networks/{network_id}:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networks/{network_id}
-      description: Получение информации об определённой сети, присоединенной к кластеру.
+      summary: Полученеи информации о сети кластера
+      description: Возвращает информацию об указанной сети, присоединенной к кластеру.
       parameters:
         - name: Accept
           in: header
@@ -4786,39 +4184,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 12:51:43 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 7958cbfe-3e76-467a-9e20-b89220967027
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4851,9 +4216,9 @@ paths:
     put:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networks/{network_id}
+      summary: Изменение параметров сети кластера
       description: >-
-        Изменение параметров логической сети, присоединенной к кластеру.
+        Изменяет значения параметров логической сети на значения, переданые в теле запроса.
 
 
         С помощью данного сервиса можно изменить только те парметры логической
@@ -4879,39 +4244,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Thu, 16 Nov 2023 12:56:02 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 23d77941-1d4e-4c0a-92a3-8a0502b06da2
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -4941,12 +4273,11 @@ paths:
                 href: >-
                   /ovirt-engine/api/clusters/9bbf76bd-b656-4749-b0b9-b406cca3a897/networks/6fef49c0-91c5-4b61-9558-402d3692b233
                 id: 6fef49c0-91c5-4b61-9558-402d3692b233
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/networks/f9dfdcd8-4e78-4109-82ec-01b5473b4f6a:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/networks/{network_id}
-      description: Открепление логической сети от кластера.
+      summary: Открепление сети от кластера
+      description: Открепляет указанную логическую сеть от указанного кластера.
       parameters:
         - name: Accept
           in: header
@@ -4957,70 +4288,37 @@ paths:
           in: query
           schema:
             type: boolean
-          description: Указывает, должно ли удаление выполняться асинхронно.
+          description: Указывает, должна ли операция выполняться асинхронно.
           example: 'true'
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:00:22 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 34e44d58-fe17-40d6-862b-3e8607c7c9fd
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               example:
                 status: complete
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions:
+  /ovirt-engine/api/clusters/{cluster_id}/permissions:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/permissions
+      summary: Назначение прав на ресурсы кластера
       description: >-
-        Выдача разрешений пользователю/группе на использование ресурсов
+        Назначает права пользователю/группе на использование ресурсов
         кластера.
 
 
-        Набор разрешений определяется ролью, передаваемой в теле запроса.
+        Набор прав определяется ролью, передаваемой в теле запроса.
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: >-
-                "{\r\n    \"role\": {\r\n        \"name\": \"VmCreator\"\r\n   
-                },\r\n    \"user\": {\r\n        \"id\":
-                \"3093a9c8-c599-4384-ab95-f46ea5e01ab9\"\r\n    }\r\n}"
+              type: object
+              example:
+                role: VmCreator 
+                user: 
+                  id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
       parameters:
         - name: Accept
           in: header
@@ -5035,44 +4333,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:03:34 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9/permissions/42db3492-954c-4c93-ac38-516a8fdee3ad
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 385a181d-f830-47f3-81cf-7cca55d97c09
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5093,35 +4353,6 @@ paths:
                 id: 42db3492-954c-4c93-ac38-516a8fdee3ad
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:03:09 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 36ee27ca-eac6-4e93-b602-1b4ff04564b8
-            Connection:
-              schema:
-                type: string
-                example: close
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5132,8 +4363,8 @@ paths:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/permissions
-      description: Получение списка всех разрешений для кластера.
+      summary: Получение списка прав
+      description: Получает список всех прав, назначенных пользователям/группам для кластера.
       parameters:
         - name: Accept
           in: header
@@ -5149,39 +4380,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:04:42 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 69f06f84-bb02-4668-bb8c-ca1e75672dea
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5280,27 +4478,6 @@ paths:
                     id: dd10a76c-1a90-458e-9ba3-3c01fa39144c
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:10:33 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '226'
-            Connection:
-              schema:
-                type: string
-                example: close
-            Content-Type:
-              schema:
-                type: string
-                example: text/html; charset=iso-8859-1
           content:
             text/plain:
               schema:
@@ -5318,12 +4495,12 @@ paths:
                         </p>
                     </body>
                 </html>
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144:
+  /ovirt-engine/api/clusters/{cluster_id}/permissions/{permission_id}:
     get:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/permissions/{permission_id}
-      description: Получение сведений об указанном наборе разрешении в кластере
+      summary: Получение сведений о наборе прав в кластере
+      description: Возвращает информацию об указанном наборе прав в кластере
       parameters:
         - name: Accept
           in: header
@@ -5333,39 +4510,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:10:04 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: b74d6093-c2b4-419c-8f97-5eff6f1107c4
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5386,42 +4530,16 @@ paths:
                 id: dd10a76c-1a90-458e-9ba3-3c01fa39144c
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:10:16 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: b0c53f23-5734-452e-bd3e-502a5a5b80fa
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/permissions/dd10a76c-1a90-458e-9ba3-3c01fa39144c:
     delete:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/permissions/{permission_id}
-      description: Отзыв указанного набора разрешений на использование ресурсов кластера
+      summary: Отзыв прав
+      description: Отзывает указанный набор прав на использование ресурсов кластера
       parameters:
         - name: Accept
           in: header
@@ -5437,39 +4555,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:14:46 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 467fc0fd-1c57-45cc-bc7b-2bd81c169cd7
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5478,27 +4563,6 @@ paths:
                 status: complete
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:12:45 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '226'
-            Connection:
-              schema:
-                type: string
-                example: close
-            Content-Type:
-              schema:
-                type: string
-                example: text/html; charset=iso-8859-1
           content:
             text/plain:
               schema:
@@ -5518,53 +4582,28 @@ paths:
                 </html>
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:13:19 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: a74e23cf-3fd4-4e4a-b7b2-c2e3932e8a1b
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/resetemulatedmachine:
+  /ovirt-engine/api/clusters/{cluster_id}/resetemulatedmachine:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/resetemulatedmachine
+      summary: Сброс эмулируемой машины
       description: >-
-        Сброс эмулируемой машины.
+        Представляет собой метод кластера, при вызове которого сбрасывается эмулируемая машины.
 
 
         Соответствует операции в UI Кластеры - Доп. действия - Сбросить
         эмулируемую машину.
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: '"{}"'
+              type: object
+              example: {}
       parameters:
         - name: Accept
           in: header
@@ -5585,39 +4624,6 @@ paths:
       responses:
         '409':
           description: Conflict
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:46:54 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 48eb4811-8e02-432b-9bc8-8696c5fd5bb8
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5629,23 +4635,23 @@ paths:
                     to perform this action.]
                   reason: Operation Failed
                 status: failed
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/syncallnetworks:
+  /ovirt-engine/api/clusters/{cluster_id}/syncallnetworks:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/syncallnetworks
+      summary: Синхронизация сетей кластера
       description: >-
-        Синхронизация всех сетей кластера.
+        Представляет собой метод кластера, при вызове которого запускается синхронизация всех сетей кластера.
 
 
         Соответствует операции в UI Кластеры -> Подробное представление ->
         Логические сети -> Синхронизация всех сетей
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: string
-              example: '"{}"'
+              type: object
+              example: {}
       parameters:
         - name: Accept
           in: header
@@ -5666,39 +4672,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:35:04 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 0ba166f9-4a17-40ba-9c4e-1e1fa8c742a0
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -5754,11 +4727,11 @@ paths:
                   href: /ovirt-engine/api/jobs/0857072a-1d71-4c85-abe2-943e6a473f86
                   id: 0857072a-1d71-4c85-abe2-943e6a473f86
                 status: complete
-  /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/upgrade:
+  /ovirt-engine/api/clusters/{cluster_id}/upgrade:
     post:
       tags:
         - Кластеры
-      summary: clusters/{cluster_id}/upgrade
+      summary: Установка/снятие флага обновления
       description: >-
         Запуск или завершение процесса обновления для кластера на основе
         значения, переданного в ключе **upgrade_action**. Это действие помечает
@@ -5785,46 +4758,13 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 08:45:02 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 39c83f68-5a82-48b9-9762-203825140b52
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
                 type: object
               examples:
                 example-0:
-                  summary: 200 OK start
+                  summary: Передача флага start
                   value:
                     cluster:
                       actions:
@@ -5875,7 +4815,7 @@ paths:
                     status: complete
                     upgrade_action: start
                 example-1:
-                  summary: 200 OK finish
+                  summary: Передача флага finish
                   value:
                     cluster:
                       actions:
@@ -5929,8 +4869,8 @@ paths:
     post:
       tags:
         - Профили ЦП
-      summary: cpuprofiles
-      description: Добавление нового профиля ЦП в указанный кластер
+      summary: Создание нового профиля ЦП
+      description: Добавляет новый профиль ЦП в кластер, ID которого передан в теле запроса.
       requestBody:
         content:
           application/json:
@@ -5955,44 +4895,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:43:19 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 8e697daf-8acb-4183-90eb-02f1ad0309ff
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6012,35 +4914,6 @@ paths:
                 id: 025317b0-839b-4fdf-9536-5e91b4f76690
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:41:04 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 20846ae6-0c88-4bec-804a-53e75055ddb4
-            Connection:
-              schema:
-                type: string
-                example: close
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6052,39 +4925,6 @@ paths:
                 reason: Input validation failed.
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:43:00 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: ae25a86a-2a48-4908-8315-863c8fecd6a0
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6097,8 +4937,8 @@ paths:
     get:
       tags:
         - Профили ЦП
-      summary: cpuprofiles
-      description: Получение списка профилей ЦП
+      summary: Получение списка профилей ЦП
+      description: Возвращает список существующих профилей ЦП
       parameters:
         - name: Accept
           in: header
@@ -6122,39 +4962,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:44:43 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 07db5a94-a982-4b44-a16b-96ed0cc0db72
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6197,12 +5004,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/clusters/7b50a25e-2ef3-46f4-b446-c950eb53c18d/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690
                     id: 025317b0-839b-4fdf-9536-5e91b4f76690
-  /ovirt-engine/api/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f7669:
+  /ovirt-engine/api/cpuprofiles/{cpu_profile_id}:
     get:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}
-      description: Получение сведений об указанном профиле ЦП
+      summary: Получение сведений о профиле ЦП
+      description: Возвращает сведения об указанном профиле ЦП
       parameters:
         - name: Accept
           in: header
@@ -6218,39 +5025,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:49:18 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: c90430df-78d9-4f0e-8ffb-e8b20f6b3d76
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6270,42 +5044,16 @@ paths:
                 id: 025317b0-839b-4fdf-9536-5e91b4f76690
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:49:39 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: f967d1fd-6dc9-4c56-a8da-6ebae314509f
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
-                type: string
+                type: object
               example: null
-  /ovirt-engine/api/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690:
     put:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}
-      description: Изменение указанного профиля ЦП
+      summary: Изменение профиля ЦП
+      description: Изменяет значения параметров указанного профиля ЦП на значения, переданные в теле запроса.
       requestBody:
         content:
           application/json:
@@ -6322,39 +5070,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:53:09 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: ccba2a00-a9f5-49be-8953-6557af8f603b
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6375,31 +5090,6 @@ paths:
                 id: 025317b0-839b-4fdf-9536-5e91b4f76690
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:54:37 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Type:
-              schema:
-                type: string
-                example: text/html;charset=UTF-8
-            Content-Length:
-              schema:
-                type: integer
-                example: '111'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 9e290cf7-7bcf-48fa-ade9-349a6f370d85
-            Connection:
-              schema:
-                type: string
-                example: close
           content:
             text/plain:
               schema:
@@ -6409,42 +5099,16 @@ paths:
                 org.ovirt.engine.api.model.CpuProfile), not marked as ignorable
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 09:53:55 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 23f7f4ec-5aa8-482f-8cc0-3e2779f7bdd8
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/cpuprofiles/e3472988-0ed8-4e40-946c-a84dd8c58d48:
     delete:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}
-      description: Удаление указанного профиля ЦП
+      summary: Удаление профиля ЦП
+      description: Удаляет указанный профиль ЦП
       parameters:
         - name: Accept
           in: header
@@ -6459,40 +5123,7 @@ paths:
           example: 'false'
       responses:
         '200':
-          description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 13:51:27 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 020f1e3b-86bd-4d93-977d-f845f8c3c6a6
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
+          description: OK (Возвращается при успешном выполнении если асинхронный режим выключен) 
           content:
             application/json:
               schema:
@@ -6500,32 +5131,7 @@ paths:
               example:
                 status: complete
         '202':
-          description: Accepted
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:22:34 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 0b06c38f-c4e4-4acc-9e10-15e106ff3434
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
+          description: Accepted (Возвращается при успешном выполнении если асинхронный режим включен) 
           content:
             text/plain:
               schema:
@@ -6533,43 +5139,18 @@ paths:
               example: null
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:22:55 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: c3cc10c7-5ec7-4637-a920-4a3572108c04
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690/permissions:
+  /ovirt-engine/api/cpuprofiles/{cpu_profile_id}/permissions:
     post:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}/permissions
+      summary: Назначение прав на использование профиля ЦП
       description: |-
-        Выдача пользователю/группе набора разрешений на использование профиля ЦП
+        Назначает пользователю/группе набор прав на использование профиля ЦП
 
         Набор разрешений определяется ролью, передаваемой в теле запроса.
       requestBody:
@@ -6591,44 +5172,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:03:49 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9/permissions/c1e54400-45bf-4737-8f3c-7ae326f72592
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 6f1aa7f9-1fa9-4368-8239-451f4d4c3156
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6645,35 +5188,6 @@ paths:
                 id: c1e54400-45bf-4737-8f3c-7ae326f72592
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:03:01 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 01b85f83-22e5-45c0-a54d-3dda430e0a45
-            Connection:
-              schema:
-                type: string
-                example: close
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6692,9 +5206,9 @@ paths:
     get:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}/permissions
+      summary: Получение списка прав на профиль ЦП
       description: >-
-        Получение списка разрешений, выданных пользователям/группам в отношении
+        Возвращает список прав, выданных пользователям/группам в отношении
         указанного профиля ЦП
       parameters:
         - name: Accept
@@ -6710,39 +5224,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:07:34 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 4fc0d70f-5417-4d04-8cb3-26fd72465a59
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6787,13 +5268,13 @@ paths:
                         /ovirt-engine/api/users/3093a9c8-c599-4384-ab95-f46ea5e01ab9
                       id: 3093a9c8-c599-4384-ab95-f46ea5e01ab9
                     id: c1e54400-45bf-4737-8f3c-7ae326f72592
-  /ovirt-engine/api/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690/permissions/0985ba37-5bc2-401a-8e64-13a1a549beda:
+  /ovirt-engine/api/cpuprofiles/{cpu_profile_id}/permissions/{permission_id}:
     get:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}/permissions/{permission_id}
+      summary: Получение сведений о наборе прав на профиль ЦП
       description: >-
-        Получение сведений об указанном наборе разрешений, выданных
+        Возвращает сведения об указанном наборе прав, выданных
         пользователю/группе в отношении указанного профиля ЦП
       parameters:
         - name: Accept
@@ -6804,39 +5285,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:15:50 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: c2c6f80b-4fad-49ed-afe9-0f946c17e8fb
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6854,42 +5302,16 @@ paths:
                 id: 0985ba37-5bc2-401a-8e64-13a1a549beda
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:16:04 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: a71a287f-d368-405e-9a21-9201f0e5544e
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/cpuprofiles/025317b0-839b-4fdf-9536-5e91b4f76690/permissions/a21058a8-fdfc-4c46-8d83-2164a25bc066:
     delete:
       tags:
         - Профили ЦП
-      summary: cpuprofiles/{cpu_profile_id}/permissions/{paermission_id}
-      description: Отзыв указанных разрешений у профиля ЦП
+      summary: Отзыв прав на профиль ЦП
+      description: Отзывает указанный набор прав на профиль ЦП
       parameters:
         - name: Accept
           in: header
@@ -6905,39 +5327,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 13:50:42 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: d7b089ff-e3a7-489f-8a3e-90fc8e86daed
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -6946,31 +5335,6 @@ paths:
                 status: complete
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 10:19:42 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 7fb46485-4815-4dbb-bd5b-eefa2d11bd57
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
@@ -6980,8 +5344,8 @@ paths:
     post:
       tags:
         - Центры данных
-      summary: datacenters
-      description: Создание центра данных с указанными в теле запроса параметрами
+      summary: Создание центра данных
+      description: Создает центр данных с указанными в теле запроса параметрами
       requestBody:
         content:
           application/json:
@@ -7001,44 +5365,6 @@ paths:
       responses:
         '201':
           description: Created
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:13:43 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Location:
-              schema:
-                type: string
-                example: >-
-                  https://he-engine.test-env.local/ovirt-engine/api/v4/ovirt-engine/api/datacenters/a0de4553-6bbe-4368-938a-acb97a8460c7
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 26bec354-f116-4e33-8222-0a466194b2ea
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -7091,31 +5417,6 @@ paths:
                 id: a0de4553-6bbe-4368-938a-acb97a8460c7
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:14:03 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Type:
-              schema:
-                type: string
-                example: text/html;charset=UTF-8
-            Content-Length:
-              schema:
-                type: integer
-                example: '106'
-            Correlation-Id:
-              schema:
-                type: string
-                example: b4abb73f-0401-4bee-a9d2-6a3d55d60ffd
-            Connection:
-              schema:
-                type: string
-                example: close
           content:
             text/plain:
               schema:
@@ -7126,8 +5427,8 @@ paths:
     get:
       tags:
         - Центры данных
-      summary: datacenters
-      description: Получение списка центров данных
+      summary: Получение списка центров данных
+      description: ПВозвращает список центров данных, существующих в системе
       parameters:
         - name: Accept
           in: header
@@ -7169,39 +5470,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:15:10 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 227925b0-eb52-497c-a107-8d5747cb73c7
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -7258,12 +5526,12 @@ paths:
                     href: >-
                       /ovirt-engine/api/datacenters/2d0d7a72-c9ab-11ee-8ce9-00163e6814cb
                     id: 2d0d7a72-c9ab-11ee-8ce9-00163e6814cb
-  /ovirt-engine/api/datacenters/565aaee8-5a49-40fe-9353-eb6e242fe0b7:
+  /ovirt-engine/api/datacenters/{dc_id}:
     get:
       tags:
         - Центры данных
-      summary: datacenters/{dc_id}
-      description: Получение сведений об указанном центре данных
+      summary: Получение информации о центре данных
+      description: Возвращает информацию об указанном центре данных
       security:
         - basicAuth: []
       parameters:
@@ -7275,39 +5543,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:19:43 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 06389a78-8158-4bef-921d-0417e23fe89d
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -7365,8 +5600,8 @@ paths:
     put:
       tags:
         - Центры данных
-      summary: datacenters/{dc_id}
-      description: Изменение параметров указанного центра данных
+      summary: Изменение центра данных
+      description: Изменяет значения параметров указанного центра данных на значения, переданные в теле запроса.
       requestBody:
         content:
           application/json:
@@ -7383,39 +5618,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:21:51 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: b7af36ef-d329-4991-b84d-dc5c9469062d
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -7472,31 +5674,6 @@ paths:
                 id: 565aaee8-5a49-40fe-9353-eb6e242fe0b7
         '400':
           description: Bad Request
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:22:27 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Type:
-              schema:
-                type: string
-                example: text/html;charset=UTF-8
-            Content-Length:
-              schema:
-                type: integer
-                example: '111'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 4860ec7c-3b9b-483b-9868-660898158df5
-            Connection:
-              schema:
-                type: string
-                example: close
           content:
             text/plain:
               schema:
@@ -7506,42 +5683,16 @@ paths:
                 org.ovirt.engine.api.model.DataCenter), not marked as ignorable
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:22:43 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: a84471fb-5063-437f-86e9-954ddc57f943
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
                 type: string
               example: null
-  /ovirt-engine/api/datacenters/522f233b-b9c1-426a-8381-887f7a278e8c:
     delete:
       tags:
         - Центры данных
-      summary: datacenters/{dc_id}
-      description: Удаление указанного центра данных
+      summary: Удаление центра данных
+      description: Удаляет указанный центр данных
       parameters:
         - name: Accept
           in: header
@@ -7565,39 +5716,6 @@ paths:
       responses:
         '200':
           description: OK
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:30:21 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Encoding:
-              schema:
-                type: string
-                example: gzip
-            Content-Type:
-              schema:
-                type: string
-                example: application/json
-            Correlation-Id:
-              schema:
-                type: string
-                example: 3563c522-567f-48ad-a54d-5bd406cc5d98
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
-            Transfer-Encoding:
-              schema:
-                type: string
-                example: chunked
           content:
             application/json:
               schema:
@@ -7609,31 +5727,6 @@ paths:
                 status: complete
         '404':
           description: Not Found
-          headers:
-            Date:
-              schema:
-                type: string
-                example: Fri, 16 Feb 2024 14:29:30 GMT
-            Server:
-              schema:
-                type: string
-                example: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_auth_gssapi/1.6.1
-            Content-Length:
-              schema:
-                type: integer
-                example: '0'
-            Correlation-Id:
-              schema:
-                type: string
-                example: 8f8210cd-9687-4b7c-aab6-4c8e2e5a867a
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5, max=100
-            Connection:
-              schema:
-                type: string
-                example: Keep-Alive
           content:
             text/plain:
               schema:
